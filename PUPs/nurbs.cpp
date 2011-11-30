@@ -97,13 +97,15 @@ Point Nurbs::getSinglePoint(double u)
 
     if (s.x > right_most.x){
         right_most = s;
-    } else if (s.x < left_most.x){
+    }
+    if (s.x < left_most.x){
         left_most = s;
     }
 
     if (s.y > top_most.y){
         top_most = s;
-    } else if (s.y < bottom_most.y){
+    }
+    if (s.y < bottom_most.y){
         bottom_most = s;
     }
 
