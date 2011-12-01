@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed Nov 30 17:25:53 2011
+** Created: Wed Nov 30 17:54:16 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -37,6 +37,7 @@ public:
     QAction *actionRedo;
     QAction *actionSave;
     QAction *actionLoad;
+    QAction *actionTest;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QSplitter *splitter_3;
@@ -79,6 +80,8 @@ public:
         actionSave->setObjectName(QString::fromUtf8("actionSave"));
         actionLoad = new QAction(MainWindow);
         actionLoad->setObjectName(QString::fromUtf8("actionLoad"));
+        actionTest = new QAction(MainWindow);
+        actionTest->setObjectName(QString::fromUtf8("actionTest"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         horizontalLayout = new QHBoxLayout(centralWidget);
@@ -233,7 +236,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 931, 21));
+        menuBar->setGeometry(QRect(0, 0, 931, 26));
         menuApplication = new QMenu(menuBar);
         menuApplication->setObjectName(QString::fromUtf8("menuApplication"));
         menuEdit = new QMenu(menuBar);
@@ -257,6 +260,10 @@ public:
         QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glBasisEditorPane, SLOT(updateMe(int)));
         QObject::connect(glBasisEditorPane, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
         QObject::connect(glParameterPane, SIGNAL(updateNext(int)), glCurvePane, SLOT(updateMe(int)));
+        QObject::connect(actionUndo, SIGNAL(triggered()), glCurvePane, SLOT(undo()));
+        QObject::connect(actionRedo, SIGNAL(triggered()), glCurvePane, SLOT(redo()));
+        QObject::connect(actionLoad, SIGNAL(triggered()), glCurvePane, SLOT(loadSlot()));
+        QObject::connect(actionSave, SIGNAL(triggered()), glCurvePane, SLOT(saveSlot()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -269,6 +276,7 @@ public:
         actionRedo->setText(QApplication::translate("MainWindow", "Redo", 0, QApplication::UnicodeUTF8));
         actionSave->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         actionLoad->setText(QApplication::translate("MainWindow", "Load", 0, QApplication::UnicodeUTF8));
+        actionTest->setText(QApplication::translate("MainWindow", "Test", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "PUPs Curve Editor:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glCurvePane->setAccessibleName(QString());
