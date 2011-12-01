@@ -67,10 +67,8 @@ void Pup::updateAll(){
     }
 
     //first and last control point basis functions are centered at 0 and 1
-    double step_denominator = control_points.size()-1;
-    for (int i = 0; i <= step_denominator; i++){
-        basis_centers.push_back((i/step_denominator) + basis_functions[i].center_offset);
-    }
+    double step_denominator = control_points.size()+1;
+
 
     //update the radii of all the basis functions
     for (int i = 0; i < basis_functions.size(); i++){
@@ -78,6 +76,10 @@ void Pup::updateAll(){
             basis_functions[i].actual_radius_left = basis_functions[i].relative_radius_left*(1/step_denominator);
             basis_functions[i].actual_radius_right = basis_functions[i].relative_radius_right*(1/step_denominator);
         }
+    }
+
+    for (int i = 1; i <= step_denominator; i++){
+        basis_centers.push_back((i/step_denominator) + basis_functions[i].center_offset);
     }
 
     updateCurve();
