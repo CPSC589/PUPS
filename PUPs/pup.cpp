@@ -61,25 +61,39 @@ void Pup::updateAll(){
         return;
     } else if (control_points.size() == 1){
         basis_centers.push_back(0.5);
-        basis_functions[0].actual_radius_left = 0.5;
-        basis_functions[0].actual_radius_right = 0.5;
+        if (basis_functions[0].is_relative_radius){
+            basis_functions[0].actual_radius_left = 0.5;
+            basis_functions[0].actual_radius_right = 0.5;
+        }
         return;
     }
 
-    //first and last control point basis functions are centered at 0 and 1
-    double step_denominator = control_points.size()+1;
+    float first_center;
+    double step_numerator = 1.0;
+    double step_denominator = control_points.size()-1;
 
-
-    //update the radii of all the basis functions
-    for (int i = 0; i < basis_functions.size(); i++){
-        if (basis_functions[i].is_relative_radius){
-            basis_functions[i].actual_radius_left = basis_functions[i].relative_radius_left*(1/step_denominator);
-            basis_functions[i].actual_radius_right = basis_functions[i].relative_radius_right*(1/step_denominator);
-        }
+    if (basis_functions[basis_functions.size()-1].is_relative_radius){
+        step_denominator += basis_functions[basis_functions.size()-1].relative_radius_right;
+    } else {
+        step_numerator -= basis_functions[basis_functions.size()-1].actual_radius_right;
     }
 
-    for (int i = 1; i <= step_denominator; i++){
-        basis_centers.push_back((i/step_denominator) + basis_functions[i].center_offset);
+    if (basis_functions[0].is_relative_radius){
+        step_denominator += basis_functions[0].relative_radius_left;
+        first_center = basis_functions[0].relative_radius_left*step_numerator/step_denominator;
+    } else {
+        step_numerator -= basis_functions[0].actual_radius_left;
+        first_center = basis_functions[0].actual_radius_left;
+    }
+
+    for (int i = 0; i < basis_functions.size(); i++)
+    {
+        basis_centers.push_back(first_center + i*(step_numerator/step_denominator) + basis_functions[i].center_offset);
+
+        if (basis_functions[i].is_relative_radius){
+            basis_functions[i].actual_radius_left = basis_functions[i].relative_radius_left*(step_numerator/step_denominator);
+            basis_functions[i].actual_radius_right = basis_functions[i].relative_radius_right*(step_numerator/step_denominator);
+        }
     }
 
     updateCurve();
