@@ -24,52 +24,5 @@ HEADERS  += mainwindow.h \
     point.h \
     nurbs.h
 
-FORMS    += mainwindow.ui
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+FORMS    += \
+    mainwindow.ui

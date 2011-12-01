@@ -68,7 +68,7 @@ void Pup::updateAll(){
 
     //first and last control point basis functions are centered at 0 and 1
     double step_denominator = control_points.size()-1;
-    for (int i = 0; i <= step_denominator; i++){
+    for (int i = ; i <= step_denominator; i++){
         basis_centers.push_back((i/step_denominator) + basis_functions[i].center_offset);
     }
 
