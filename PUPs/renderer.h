@@ -19,6 +19,8 @@
 #include "Point.h"
 #include "Pup.h"
 #include "PupBasis.h"
+#include "controlpoint.h"
+#include "state.h"
 
 class Renderer : public QGLWidget
 {
@@ -37,6 +39,10 @@ signals:
 public slots:
 	
     void updateMe(int origin_pane);
+    void undo();
+    void redo();
+    void saveSlot();
+    void loadSlot();
 
 protected:
 
@@ -83,6 +89,13 @@ private:
         static int selectable_basis_point_index;
         //to be used by pup curve and basis editor panes
         static float selection_radius;
+
+        //change of states
+        vector<State> states;
+        int stateIndex;
+
+        //control point information
+        vector<ControlPoint> ControlPoints;
 
     //Stuff each render pane needs.
         int this_pane_type;

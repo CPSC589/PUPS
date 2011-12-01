@@ -15,61 +15,17 @@ SOURCES += main.cpp\
     renderer.cpp \
     point.cpp \
     pup.cpp \
-    nurbs.cpp
+    nurbs.cpp \
+    state.cpp \
+    controlpoint.cpp
 
 HEADERS  += mainwindow.h \
     pupbasis.h \
     renderer.h \
     pup.h \
     point.h \
-    nurbs.h
+    nurbs.h \
+    state.h \
+    controlpoint.h
 
 FORMS    += mainwindow.ui
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

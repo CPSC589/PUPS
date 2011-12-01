@@ -384,6 +384,39 @@ void Renderer::updateOtherPanes(){
     emit updateNext(this_pane_type);
 }
 
+// When the user presses Control Z or presses the undo button,
+// the program loads the last known state that the system was in.
+// There must be a previous state to do so.
+
+void Renderer::undo(){
+    qDebug() << "undoed!";
+    if(stateIndex - 1 >= 0){
+        State currentState = states[stateIndex-1];
+        ControlPoints = currentState.loadControlPoints();
+    }
+    updateGL();
+}
+
+// When the user presses Control Y or presses the undo button,
+// the program loads the next known state that the system was in.
+// There must be a known next state to do so.
+void Renderer::redo(){
+    qDebug() << "redoed!";
+    if(stateIndex + 1 < states.size()){
+        State currentState = states[stateIndex+1];
+        ControlPoints = currentState.loadControlPoints();
+    }
+    updateGL();
+}
+
+void Renderer::saveSlot(){
+    qDebug() << "saved!";
+}
+
+void Renderer::loadSlot(){
+    qDebug() << "loaded!";
+}
+
 //=================================================================
 // ENGINE HELPER FUNCTIONS
 //=================================================================
