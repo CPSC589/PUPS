@@ -6,6 +6,8 @@
 
 #include "Point.h"
 #include <cmath>
+#include <GL/glu.h>
+#include <QString>
 using namespace std;
 
 //Constructors
@@ -121,3 +123,4 @@ ifstream& operator >> (ifstream& input, Point& p)
 	input >> p.x >> p.y >> p.z;
 	return input;
 }
+

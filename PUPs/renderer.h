@@ -89,6 +89,8 @@ private:
         static int selectable_basis_point_index;
         //to be used by pup curve and basis editor panes
         static float selection_radius;
+        //index to be used when editing a specific basis function
+        static int selected_nurb_basis_index;
 
         //change of states
         vector<State> states;

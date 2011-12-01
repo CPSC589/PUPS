@@ -22,6 +22,7 @@ int Renderer::selectable_basis_point_index = -1;
 int Renderer::selected_basis_point_index = -1;
 int Renderer::selectable_pup_point_index = -1;
 int Renderer::selected_pup_point_index = -1;
+int Renderer::selected_nurb_basis_index = -1;
 float Renderer::selection_radius = 10;
 //uninitialised static variables shared across all renderers
 PupBasis Renderer::default_basis;
@@ -294,7 +295,60 @@ void Renderer::mousePressPupPane()
     updateGL();
     updateOtherPanes();
 }
-void Renderer::mousePressBasisPane(){}
+void Renderer::mousePressBasisPane(){
+
+Point temp = lastMousePress;
+    if (selectable_pup_point_index != -1){
+        selected_pup_point_index = selectable_pup_point_index;
+    } else {
+        //Point temp = lastMousePress;
+        temp.x = temp.x - 455.0/2;
+        temp.y = temp.y - 232.0/2;
+        temp.x = temp.x/(455.0/4);
+        temp.y = -temp.y/(232/4);
+
+        pup_curve.basis_functions[selected_pup_point_index].basis_function.control_points.push_back(temp);
+        pup_curve.basis_functions[selected_pup_point_index].basis_function.weights.push_back(1);
+        selected_basis_point_index = pup_curve.basis_functions[selected_pup_point_index].basis_function.control_points.size()-1;
+        pup_curve.basis_functions[selected_pup_point_index].basis_function.updateAll();
+        pup_curve.updateCurve();
+       // pup_curve.basis_functions[selected_pup_point_index].basis_function.curve_points.insert(
+        //        pup_curve.basis_functions[selected_pup_point_index].basis_function.curve_points.size()-2, temp);
+    }
+
+    qDebug() << temp.x;
+    qDebug() << temp.y;
+    qDebug() << lastMousePress.z;
+    qDebug() << "\n";
+    updateGL();
+    updateOtherPanes();
+
+
+
+/*
+
+    float current_distance = 0;
+    float closest_distance = selection_radius;
+    int closest_point_index = -1;
+    //loop through all control points to see if any are within selection radius
+    for (unsigned int i = 0; i < basisPoints.size(); i++){
+        current_distance = (basisPoints[i] - lastMousePosition).magnitude();
+        if (current_distance < closest_distance){
+            closest_point_index = i;
+            closest_distance = current_distance;
+        }
+    }
+
+    if (closest_distance < selection_radius){
+        selected_nurb_basis_index = closest_point_index;
+    } else {
+        selected_nurb_basis_index = -1;
+    }
+
+
+    qDebug()  << current_distance;*/
+
+}
 void Renderer::mousePressParameterPane(){}
 void Renderer::mousePressProjectionPane(){}
 
@@ -358,12 +412,22 @@ void Renderer::mouseMovePupPane()
         } else {
             selectable_pup_point_index = -1;
         }
+
     }
+    qDebug() << lastMousePosition.x;
+    qDebug() << lastMousePosition.y;
+    qDebug() << lastMousePosition.z;
+    qDebug() << "/n";
 
     updateGL();
     updateOtherPanes();
 }
-void Renderer::mouseMoveBasisPane(){}
+void Renderer::mouseMoveBasisPane(){
+    qDebug() << lastMousePosition.x;
+    qDebug() << lastMousePosition.y;
+    qDebug() << lastMousePosition.z;
+    qDebug() << "/n";
+}
 void Renderer::mouseMoveParameterPane(){}
 void Renderer::mouseMoveProjectionPane(){}
 

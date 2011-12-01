@@ -16,7 +16,7 @@ class Point{
 	//file stream IO
 	friend ostream& operator << (ostream& output, const Point& p);
 	friend ofstream& operator << (ofstream& output, const Point& p);
-	friend ifstream& operator >> (ifstream& input, Point& p);
+	friend ifstream& operator >> (ifstream& input, Point& p);        
 
 	//constructors
 	float x,y,z;
@@ -38,6 +38,9 @@ class Point{
 	void abs();
 	float magnitude();
 	bool equals(Point);
+
+        //Print
+        void print();
 };
 
 #endif
