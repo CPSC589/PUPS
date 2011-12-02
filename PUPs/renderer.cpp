@@ -189,29 +189,57 @@ void Renderer::drawParameterPane()
     {
         p_cur_basis = &pup_curve.basis_functions[i];
 
-        x_mult = pup_curve.basis_centers[i]-p_cur_basis->actual_radius_left;
-        width_mult = p_cur_basis->actual_radius_left + p_cur_basis->actual_radius_right;
+        //draw left side of basis function
 
-        //set viewport for current basis
-        glViewport(x() + width()*x_mult,y(),width()*width_mult,height()-30);
+            x_mult = pup_curve.basis_centers[i]-p_cur_basis->actual_radius_left;
+            width_mult = p_cur_basis->actual_radius_left;
 
-        //setup the orthographic viewing matrix for the current basis
-        glMatrixMode( GL_PROJECTION );
-        glLoadIdentity();
-        gluOrtho2D(p_cur_basis->basis_function.left_most.x,  p_cur_basis->basis_function.right_most.x, smallest_y, largest_y);
-        glMatrixMode( GL_MODELVIEW );
+            //set viewport for current basis
+            glViewport(x() + width()*x_mult,y(),width()*width_mult,height()-30);
 
-        glColor3f(0,0,0);
-        if (i == selected_pup_point_index)
-        {
-            glColor3f(0,1,0);
-        }
-        glLineWidth(2);
-        glBegin(GL_LINE_STRIP);
-        for (int j = 0; j < p_cur_basis->basis_function.curve_points.size(); j++){
-            glVertex2d(p_cur_basis->basis_function.curve_points[j].x, p_cur_basis->basis_function.curve_points[j].y);
-        }
-        glEnd();
+            //setup the orthographic viewing matrix for the current basis
+            glMatrixMode( GL_PROJECTION );
+            glLoadIdentity();
+            gluOrtho2D(p_cur_basis->basis_function.left_most.x,  p_cur_basis->basis_function.getSinglePoint(0.5).x, smallest_y, largest_y);
+            glMatrixMode( GL_MODELVIEW );
+
+            glColor3f(0,0,0);
+            if (i == selected_pup_point_index)
+            {
+                glColor3f(0,1,0);
+            }
+            glLineWidth(2);
+            glBegin(GL_LINE_STRIP);
+            for (int j = 0; j < p_cur_basis->basis_function.curve_points.size()/2; j++){
+                glVertex2d(p_cur_basis->basis_function.curve_points[j].x, p_cur_basis->basis_function.curve_points[j].y);
+            }
+            glEnd();
+
+        //draw right hand side of basis function
+
+            x_mult = pup_curve.basis_centers[i];
+            width_mult = p_cur_basis->actual_radius_right;
+
+            //set viewport for current basis
+            glViewport(x() + width()*x_mult,y(),width()*width_mult,height()-30);
+
+            //setup the orthographic viewing matrix for the current basis
+            glMatrixMode( GL_PROJECTION );
+            glLoadIdentity();
+            gluOrtho2D(p_cur_basis->basis_function.getSinglePoint(0.5).x,  p_cur_basis->basis_function.right_most.x, smallest_y, largest_y);
+            glMatrixMode( GL_MODELVIEW );
+
+            glColor3f(0,0,0);
+            if (i == selected_pup_point_index)
+            {
+                glColor3f(0,1,0);
+            }
+            glLineWidth(2);
+            glBegin(GL_LINE_STRIP);
+            for (int j = p_cur_basis->basis_function.curve_points.size()/2; j < p_cur_basis->basis_function.curve_points.size(); j++){
+                glVertex2d(p_cur_basis->basis_function.curve_points[j].x, p_cur_basis->basis_function.curve_points[j].y);
+            }
+            glEnd();
     }
 
     //draw all the basis curves
@@ -598,7 +626,7 @@ void Renderer::setupDefaultBasis()
     temp_control_points.push_back(Point(1,0,0));
 
     Nurbs default_func = Nurbs(temp_control_points,vector<double>(),3,false);
-    default_basis = PupBasis(default_func,1.5,1.5,true);
+    default_basis = PupBasis(default_func,1,3,true);
 }
 
 //=================================================================
