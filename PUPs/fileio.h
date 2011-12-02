@@ -11,7 +11,7 @@ class FileIO
 public:
     FileIO();
     void saveData(vector<ControlPoint> ControlPoints, vector<PupBasis> basisFunctions, vector<double> basisCentres, string fileName);
-    vector<ControlPoint> loadData(string fileName);
+    Pup loadData(string fileName);
 };
 
 #endif // FILEIO_H

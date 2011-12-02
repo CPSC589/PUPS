@@ -55,14 +55,61 @@ void FileIO::saveData(vector<ControlPoint> ControlPoints, vector<PupBasis> basis
 
 }
 
-vector<ControlPoint> FileIO::loadData(string fileName){
-    vector<ControlPoint> ControlPoints;
-    //ifstream myfile(fileName);
-   // if(myfile.is_open()){
-   //     myfile.close();
-   // }
+Pup FileIO::loadData(string fileName){
+    vector<Point> ControlPoints;
+    vector<PupBasis> BasisFunctions;
+    vector<double> BasisCenters;
+    vector<double> Weights;
+    ifstream infile;
+    infile.open((fileName).c_str());
+    string currentLine;
+    if(infile.is_open()){
+        getline(infile, currentLine); getline(infile, currentLine);
+        while(currentLine.compare("BasisFunctions") != 0){ // Parse ControlPoints
+            string parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+            double currentWeight = atof(parseLine.c_str());
+            currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+            float x = atof(parseLine.c_str());
+            currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+            float y = atof(parseLine.c_str());
+            currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+            float z = atof(parseLine.c_str());
+            Weights.push_back(currentWeight);
+            ControlPoints.push_back(Point(x, y, z));
+            qDebug() << currentWeight << ' ' << x << ' ' << y << ' ' << z << '\n';
+            getline(infile, currentLine);
+        }
+        getline(infile, currentLine);
+        vector<Point> NurbPoints;
+        while(currentLine.compare("BasisCentres") != 0){
+            string previous = currentLine;
+            getline(infile, currentLine);
+            while(currentLine.compare("NewBasis") != 0){
+                if(previous.compare("NewBasis") == 0){
+
+                }
+                else{
+                    string parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                    double currentWeight = atof(parseLine.c_str());
+                    currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                    float x = atof(parseLine.c_str());
+                    currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                    float y = atof(parseLine.c_str());
+                    currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                    float z = atof(parseLine.c_str());
+                    Weights.push_back(currentWeight);
+
+                    NurbPoints.push_back(Point(x, y, z));
+                }
+            }
+            //BasisFunctions.push_back(currentBasis);
+        }
+
+        infile.close();
+    }
 
 
-
-    return ControlPoints;
+    Pup pupCurve = Pup(ControlPoints, BasisFunctions, Weights);
+    pupCurve.basis_centers = BasisCenters;
+    return pupCurve;
 }

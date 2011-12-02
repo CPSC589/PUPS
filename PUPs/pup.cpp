@@ -39,7 +39,8 @@ void Pup::addControlPoint(Point _cp, PupBasis _basis, double weight){
 
 Point Pup::getSinglePoint(double u)
 {
-    Point s = Point();
+    //z value will hold info about normalising_denominator
+    Point s = Point(0,0,1);
     double normalising_denominator = 0;
 
     for (int i = 0; i < control_points.size(); i++)
@@ -112,10 +113,30 @@ void Pup::updateCurve()
 
 double Pup::bFunc(int i, double u)
 {
+    double dist_from_center = u - basis_centers[i];
 
+    if (dist_from_center < 0)
+    {
+        dist_from_center *= -1.0;
+        if (dist_from_center <= basis_functions[i].actual_radius_left){
+            double basis_u = 0.5 - 0.5*dist_from_center/basis_functions[i].actual_radius_left;
+            return basis_functions[i].basis_function.getSinglePoint(basis_u).y;
+        }
+    } else {
+        if (dist_from_center <= basis_functions[i].actual_radius_right){
+            double basis_u = 0.5 + 0.5*dist_from_center/basis_functions[i].actual_radius_right;
+            return basis_functions[i].basis_function.getSinglePoint(basis_u).y;
+        }
+    }
+
+    return 0;
+
+    /*
     //check if this control point should have influence
     if ((u >= basis_centers[i]-basis_functions[i].actual_radius_left) && (u <= basis_centers[i]+basis_functions[i].actual_radius_right))
     {
+        double dist_from_center = u - basis_centers[i];
+
         // find the difference between u and the beginning of the basis function
         double distance_into_range = u - (basis_centers[i]-basis_functions[i].actual_radius_left);
         //get the u value to send to the basis curve
@@ -125,5 +146,5 @@ double Pup::bFunc(int i, double u)
     }
     else {
         return 0;
-    }
+    } */
 }
