@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     pup.cpp \
     nurbs.cpp \
     state.cpp \
-    controlpoint.cpp
+    controlpoint.cpp \
+    fileio.cpp
 
 HEADERS  += mainwindow.h \
     pupbasis.h \
@@ -26,7 +27,7 @@ HEADERS  += mainwindow.h \
     point.h \
     nurbs.h \
     state.h \
-    controlpoint.h
+    controlpoint.h \
+    fileio.h
 
 FORMS    += mainwindow.ui
-

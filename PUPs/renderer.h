@@ -21,6 +21,7 @@
 #include "PupBasis.h"
 #include "controlpoint.h"
 #include "state.h"
+#include "fileio.h"
 
 class Renderer : public QGLWidget
 {

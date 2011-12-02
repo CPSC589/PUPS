@@ -410,11 +410,30 @@ void Renderer::redo(){
 }
 
 void Renderer::saveSlot(){
+    FileIO outputIO = FileIO();
+
+    vector<ControlPoint> CPs = vector<ControlPoint>();
+    vector<Point> inputControlPoints = pup_curve.control_points;
+    vector<double> weights = pup_curve.weights;
+    vector<PupBasis> basisFunctions = pup_curve.basis_functions;
+    vector<double> basisCenters = pup_curve.basis_centers;
+
+    for(int i = 0; i < inputControlPoints.size(); i++){
+        ControlPoint newCP = ControlPoint(inputControlPoints[i]);
+        newCP.changeWeight(weights[i]);
+        CPs.push_back(newCP);
+    }
+
+    outputIO.saveData(CPs, basisFunctions, basisCenters, "test");
     qDebug() << "saved!";
+
+    //updateGL(); Don't really need this update.
 }
 
 void Renderer::loadSlot(){
     qDebug() << "loaded!";
+
+    updateGL();
 }
 
 //=================================================================
