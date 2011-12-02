@@ -102,7 +102,7 @@ Pup FileIO::loadData(string fileName){
                     NurbPoints.push_back(Point(x, y, z));
                 }
             }
-            BasisFunctions.push_back(currentBasis);
+            //BasisFunctions.push_back(currentBasis);
         }
 
         infile.close();
