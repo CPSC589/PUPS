@@ -233,6 +233,26 @@ void Renderer::drawBasisPane()
         PupBasis* current_basis = &(pup_curve.basis_functions[selected_pup_point_index]);
         Point current_point = Point();
 
+        //draw selected control point
+        if (selected_basis_point_index != -1){
+            current_point = current_basis->basis_function.control_points[selected_basis_point_index];
+            glPointSize(8);
+            glColor3f(0,1,0);
+            glBegin(GL_POINTS);
+                glVertex2d(current_point.x, current_point.y);
+            glEnd();
+        }
+
+        //draw selectable control point
+        if (selectable_basis_point_index != -1){
+            current_point = current_basis->basis_function.control_points[selectable_basis_point_index];
+            glPointSize(8);
+            glColor3f(0,1,1);
+            glBegin(GL_POINTS);
+                glVertex2d(current_point.x, current_point.y);
+            glEnd();
+        }
+
         //draw control points
         glPointSize(5);
         glColor3f(0,0,1);
@@ -313,11 +333,6 @@ void Renderer::mousePressBasisPane(){
         //        pup_curve.basis_functions[selected_pup_point_index].basis_function.curve_points.size()-2, temp);
     }
 
-    qDebug() << temp.x;
-    qDebug() << temp.y;
-    qDebug() << lastMousePress.z;
-    qDebug() << this->height();
-    qDebug() << "/n";
     updateGL();
     updateOtherPanes();
 
@@ -417,10 +432,7 @@ void Renderer::mouseMovePupPane()
         }
 
     }
-    qDebug() << lastMousePosition.x;
-    qDebug() << lastMousePosition.y;
-    qDebug() << lastMousePosition.z;
-    qDebug() << "/n";
+
 
     updateGL();
     updateOtherPanes();
@@ -459,10 +471,6 @@ void Renderer::mouseMoveBasisPane(){
     updateGL();
     updateOtherPanes();
 
-    qDebug() << lastMousePosition.x;
-    qDebug() << lastMousePosition.y;
-    qDebug() << lastMousePosition.z;
-    qDebug() << "/n";
 }
 void Renderer::mouseMoveParameterPane(){}
 void Renderer::mouseMoveProjectionPane(){}
