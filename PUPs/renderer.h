@@ -135,6 +135,9 @@ private:
 
     //signal wrappers
         void updateOtherPanes();
+
+   //Basis modification Helpers
+        Point mapBasisCoord(Point in);
 };
 
 #endif 

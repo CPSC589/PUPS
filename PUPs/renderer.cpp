@@ -297,15 +297,12 @@ void Renderer::mousePressPupPane()
 }
 void Renderer::mousePressBasisPane(){
 
-Point temp = lastMousePress;
-    if (selectable_pup_point_index != -1){
-        selected_pup_point_index = selectable_pup_point_index;
+    Point temp = lastMousePress;
+    if (selectable_basis_point_index != -1){
+        selected_basis_point_index = selectable_basis_point_index;
     } else {
         //Point temp = lastMousePress;
-        temp.x = temp.x - 455.0/2;
-        temp.y = temp.y - 232.0/2;
-        temp.x = temp.x/(455.0/4);
-        temp.y = -temp.y/(232/4);
+        temp = mapBasisCoord(temp);
 
         pup_curve.basis_functions[selected_pup_point_index].basis_function.control_points.push_back(temp);
         pup_curve.basis_functions[selected_pup_point_index].basis_function.weights.push_back(1);
@@ -319,7 +316,8 @@ Point temp = lastMousePress;
     qDebug() << temp.x;
     qDebug() << temp.y;
     qDebug() << lastMousePress.z;
-    qDebug() << "\n";
+    qDebug() << this->height();
+    qDebug() << "/n";
     updateGL();
     updateOtherPanes();
 
@@ -368,7 +366,12 @@ void Renderer::mouseReleasePupPane()
         selectable_pup_point_index = selected_pup_point_index;
     }
 }
-void Renderer::mouseReleaseBasisPane(){}
+void Renderer::mouseReleaseBasisPane(){
+    if (selected_basis_point_index != -1)
+    {
+        selectable_basis_point_index = selected_basis_point_index;
+    }
+}
 void Renderer::mouseReleaseParameterPane(){}
 void Renderer::mouseReleaseProjectionPane(){}
 
@@ -423,6 +426,39 @@ void Renderer::mouseMovePupPane()
     updateOtherPanes();
 }
 void Renderer::mouseMoveBasisPane(){
+    if ((selected_basis_point_index != -1) && mouseDown)
+    {
+        pup_curve.basis_functions[selected_pup_point_index].basis_function.control_points[selected_basis_point_index] = mapBasisCoord(lastMousePosition);
+        pup_curve.basis_functions[selected_pup_point_index].basis_function.updateCurve();
+    }
+
+    else if (pup_curve.basis_functions.size() > 0)
+    {
+        float current_distance = 0;
+        float closest_distance = selection_radius/100;
+        int closest_point_index = -1;
+
+        //loop through all control points to see if any are within selection radius
+        for (unsigned int i = 0; i < pup_curve.basis_functions[selected_pup_point_index].basis_function.control_points.size(); i++){
+            current_distance = (pup_curve.basis_functions[selected_pup_point_index].basis_function.control_points[i]
+                                - mapBasisCoord(lastMousePosition)).magnitude();
+            if (current_distance < closest_distance){
+                closest_point_index = i;
+                closest_distance = current_distance;
+            }
+        }
+        //see if the closest point is close enough
+        if (closest_distance < selection_radius){
+            selectable_basis_point_index = closest_point_index;
+        } else {
+            selectable_basis_point_index = -1;
+        }
+
+    }
+    pup_curve.updateAll();
+    updateGL();
+    updateOtherPanes();
+
     qDebug() << lastMousePosition.x;
     qDebug() << lastMousePosition.y;
     qDebug() << lastMousePosition.z;
@@ -430,6 +466,23 @@ void Renderer::mouseMoveBasisPane(){
 }
 void Renderer::mouseMoveParameterPane(){}
 void Renderer::mouseMoveProjectionPane(){}
+
+
+//This function maps a point to the view used in the basis viewer
+//Only call this function from code that is updaing the basis viewer.
+Point Renderer::mapBasisCoord(Point in)
+{
+    Point ret = in;
+    ret.x = ret.x - this->width()/2;
+    ret.y = ret.y - this->height()/2;
+    ret.x = ret.x/(this->width()/4);
+    ret.y = -ret.y/(this->height()/4);
+
+    return ret;
+
+}
+
+
 
 //=================================================================
 // SLOT FUNCTIONS & signal wrappers
