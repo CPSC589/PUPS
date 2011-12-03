@@ -96,6 +96,14 @@ void Renderer::initializeGL()
 }
 void Renderer::resizeGL( int w, int h )
 {
+    setupFrustum();
+    /*frustum_data[4] = 10.0;
+    frustum_data[5] = 100.0;
+    frustum_data[0] = 0;
+    frustum_data[1] = width();
+    frustum_data[2] = height();
+    frustum_data[3] = 0;
+  /*
     if(width()>=height()){
             double ratio = width()/(double)height();
             frustum_data[0] = -1.0*ratio;
@@ -111,6 +119,7 @@ void Renderer::resizeGL( int w, int h )
             frustum_data[2] = -1.0*ratio;
             frustum_data[3] = ratio;
     }
+    */
     updateOtherPanes();
 }
 
@@ -164,6 +173,9 @@ void Renderer::drawPupPane()
             glVertex2d(current_point.x, current_point.y);
         }
     glEnd();
+
+
+
 }
 void Renderer::drawParameterPane()
 {
@@ -300,6 +312,17 @@ void Renderer::drawBasisPane()
             glVertex2d(current_point.x,current_point.y);
         }
         glEnd();
+
+
+        glColor3f(1,0,0);
+        glBegin(GL_LINE_STRIP);
+        glVertex2d(-2,0);
+        glVertex2d(2,0);
+        glEnd();
+        glBegin(GL_LINE_STRIP);
+        glVertex2d(0,2);
+        glVertex2d(0,-2);
+        glEnd();
     }
 }
 void Renderer::drawProjectionPane()
@@ -311,6 +334,63 @@ void Renderer::drawProjectionPane()
     glMatrixMode( GL_MODELVIEW );
     //make curve visible
     //glTranslatef(0,0,-5);
+
+
+    //for making glVertex calls more readable
+    Point current_point = Point();
+
+    //draw selected control point
+    if (selected_pup_point_index != -1){
+        current_point = pup_curve.control_points[selected_pup_point_index];
+        glPointSize(8);
+        glColor3f(0,1,0);
+        glBegin(GL_POINTS);
+            glVertex3d(current_point.x, current_point.y, 20);
+        glEnd();
+    }
+
+    //draw selectable control point
+    if (selectable_pup_point_index != -1){
+        current_point = pup_curve.control_points[selectable_pup_point_index];
+        glPointSize(8);
+        glColor3f(0,1,1);
+        glBegin(GL_POINTS);
+            glVertex3d(current_point.x, current_point.y, 20);
+        glEnd();
+    }
+
+    //draw the rest of the control points
+    glPointSize(5);
+    glColor3f(0,0,1);
+    glBegin(GL_POINTS);
+        for (unsigned int i = 0; i < pup_curve.control_points.size(); i++){
+            current_point = pup_curve.control_points[i];
+            glVertex3d(current_point.x, current_point.y, 20);
+        }
+    glEnd();
+
+    //draw the pup curve
+    glLineWidth(2);
+    glColor3f(0,0,0);
+    glBegin(GL_LINE_STRIP);
+        for (unsigned int i = 0; i < pup_curve.curve_points.size(); i++){
+            current_point = pup_curve.curve_points[i];
+            //glVertex3d(current_point.x, current_point.y, 20);
+
+        }
+    glEnd();
+
+    glPointSize(50);
+    glBegin(GL_POINT);
+    glVertex3f(100,100,11);
+    glEnd();
+
+    glBegin(GL_LINE_STRIP);
+    glVertex3f(0,0,20);
+    glVertex3f(0,0, 80);
+    glVertex3f(200, 200, 80);
+    glEnd();
+
 
     //draw 3d and 2d simultaneously for control points, and one after the other for the curve
 }
@@ -599,9 +679,14 @@ void Renderer::loadSlot(){
 
 void Renderer::setupFrustum()
 {
-    frustum_data[4] = 2.0;
-    frustum_data[5] = 1000.0;
+    frustum_data[0] = 0;
+    frustum_data[1] = width();
+    frustum_data[2] = height();
+    frustum_data[3] = 0;
+    frustum_data[4] = 10.0;
+    frustum_data[5] = 100.0;
 
+    /*
     if(width()>=height()){
             double ratio = width()/(double)height();
             frustum_data[0] = -1.0*ratio;
@@ -616,6 +701,7 @@ void Renderer::setupFrustum()
             frustum_data[2] = -1.0*ratio;
             frustum_data[3] = ratio;
     }
+    */
 }
 
 void Renderer::setupDefaultBasis()

@@ -49,7 +49,8 @@ Point Pup::getSinglePoint(double u)
         s = s + control_points[i] * cp_coefficient;
         normalising_denominator += cp_coefficient;
     }
-
+    if (normalising_denominator == 0)
+        return Point(0.0,0.0,-1);
     s = s / normalising_denominator;
     return s;
 }
@@ -103,8 +104,10 @@ void Pup::updateAll(){
 void Pup::updateCurve()
 {
     curve_points.clear();
-    for (double u = 0; u < 1.0; u+= 0.01){
-        curve_points.push_back(getSinglePoint(u));
+    for (double u = 0; u < 1.0; u+= 0.001){
+        Point temp = getSinglePoint(u);
+        if (temp.z != -1)
+            curve_points.push_back(temp);
     }
 }
 
