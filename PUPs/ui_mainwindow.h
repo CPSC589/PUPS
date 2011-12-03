@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Dec 2 12:24:33 2011
-**      by: Qt User Interface Compiler version 4.7.4
+** Created: Fri Dec 2 19:16:18 2011
+**      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -236,7 +236,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 931, 21));
+        menuBar->setGeometry(QRect(0, 0, 931, 26));
         menuApplication = new QMenu(menuBar);
         menuApplication->setObjectName(QString::fromUtf8("menuApplication"));
         menuEdit = new QMenu(menuBar);
@@ -293,7 +293,7 @@ public:
 #ifndef QT_NO_ACCESSIBILITY
         glBasisEditorPane->setAccessibleName(QString());
 #endif // QT_NO_ACCESSIBILITY
-        menuApplication->setTitle(QApplication::translate("MainWindow", "Application", 0, QApplication::UnicodeUTF8));
+        menuApplication->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

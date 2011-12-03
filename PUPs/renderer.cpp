@@ -644,7 +644,11 @@ void Renderer::redo(){
 
 void Renderer::saveSlot(){
     FileIO outputIO = FileIO();
-
+    QWidget* widget = new QWidget();
+    QDir* dir = new QDir();
+    QString currentPath = dir->currentPath();
+    QFileDialog* saveDialog = new QFileDialog(widget,"Blarg",currentPath,".cps");
+    QString fileName = saveDialog->getSaveFileName();
     vector<ControlPoint> CPs = vector<ControlPoint>();
     vector<Point> inputControlPoints = pup_curve.control_points;
     vector<double> weights = pup_curve.weights;
@@ -657,19 +661,22 @@ void Renderer::saveSlot(){
         CPs.push_back(newCP);
     }
 
-    outputIO.saveData(CPs, basisFunctions, basisCenters, "test");
-    qDebug() << "saved!";
+    outputIO.saveData(CPs, basisFunctions, basisCenters, fileName.toStdString());
 
     //updateGL(); Don't really need this update.
 }
 
 void Renderer::loadSlot(){
     FileIO inputIO = FileIO();
-    Pup pupCurve = inputIO.loadData("test.cps");
+    QWidget* widget = new QWidget();
+    QDir* dir = new QDir();
+    QString currentPath = dir->currentPath();
+    QFileDialog* saveDialog = new QFileDialog(widget,"Blarg",currentPath,".cps");
+    QString fileName = saveDialog->getOpenFileName();
+    Pup pupCurve = inputIO.loadData(fileName.toStdString());
     pup_curve = pupCurve;
     //pup_curve.updateAll();
     //pup_curve.updateCurve();
-    qDebug() << "loaded!";
     updateGL();
 }
 

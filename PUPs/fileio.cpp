@@ -78,7 +78,6 @@ Pup FileIO::loadData(string fileName){
             float z = atof(parseLine.c_str());
             Weights.push_back(currentWeight);
             ControlPoints.push_back(Point(x, y, z));
-            qDebug() << currentWeight << ' ' << x << ' ' << y << ' ' << z;
             getline(infile, currentLine);
         }
 
@@ -116,7 +115,6 @@ Pup FileIO::loadData(string fileName){
                    order = atoi(parseLine.c_str());
                    currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
                    uniform = atof(parseLine.c_str());
-                   qDebug() << actualRL << " " << actualRR << " " << centerOffset << " " << isRelativeRadius << " " << relativeRL << " " << relativeRR << " " << order << " " << uniform;
                 }
                 else{ // Get Nurb Control Points
                     parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
@@ -128,7 +126,6 @@ Pup FileIO::loadData(string fileName){
                     currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
                     float z = atof(parseLine.c_str());
                     nurbWeights.push_back(currentWeight);
-                    qDebug() << currentWeight << ' ' << x << ' ' << y << ' ' << z;
                     NurbPoints.push_back(Point(x, y, z));
                 }
                 previous = currentLine;
@@ -156,7 +153,6 @@ Pup FileIO::loadData(string fileName){
         while(currentLine.compare("EndOfFile") != 0){
 
             double currentCenter = atof(currentLine.c_str());
-            qDebug() << currentCenter;
             BasisCenters.push_back(currentCenter);
             getline(infile,currentLine);
         }
@@ -164,10 +160,8 @@ Pup FileIO::loadData(string fileName){
 
         infile.close();
     }
-    qDebug() << "blarg";
 
     Pup pupCurve = Pup(ControlPoints, BasisFunctions, Weights);
     pupCurve.basis_centers = BasisCenters;
-    qDebug() << "honk";
     return pupCurve;
 }
