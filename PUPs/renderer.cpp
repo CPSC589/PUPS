@@ -586,6 +586,9 @@ void Renderer::saveSlot(){
 void Renderer::loadSlot(){
     FileIO inputIO = FileIO();
     Pup pupCurve = inputIO.loadData("test.cps");
+    pup_curve = pupCurve;
+    //pup_curve.updateAll();
+    //pup_curve.updateCurve();
     qDebug() << "loaded!";
     updateGL();
 }

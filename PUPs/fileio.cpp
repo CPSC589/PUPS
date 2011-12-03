@@ -1,4 +1,6 @@
 #include "fileio.h"
+#include <iostream>
+using namespace std;
 
 FileIO::FileIO()
 {
@@ -46,7 +48,7 @@ void FileIO::saveData(vector<ControlPoint> ControlPoints, vector<PupBasis> basis
         for(int i = 0; i < basisCentres.size(); i++){
             outFile << basisCentres[i] << '\n';
         }
-
+        outFile << "EndOfFile";
         outFile.close();
     }
     else{
@@ -76,20 +78,48 @@ Pup FileIO::loadData(string fileName){
             float z = atof(parseLine.c_str());
             Weights.push_back(currentWeight);
             ControlPoints.push_back(Point(x, y, z));
-            qDebug() << currentWeight << ' ' << x << ' ' << y << ' ' << z << '\n';
+            qDebug() << currentWeight << ' ' << x << ' ' << y << ' ' << z;
             getline(infile, currentLine);
         }
+
         getline(infile, currentLine);
-        vector<Point> NurbPoints;
+
         while(currentLine.compare("BasisCentres") != 0){
             string previous = currentLine;
             getline(infile, currentLine);
-            while(currentLine.compare("NewBasis") != 0){
-                if(previous.compare("NewBasis") == 0){
-
+            vector<Point> NurbPoints = vector<Point>();
+            vector<double> nurbWeights = vector<double>();
+            int order;
+            bool uniform;
+            double actualRL;
+            double actualRR;
+            double centerOffset;
+            bool isRelativeRadius;
+            double relativeRL;
+            double relativeRR;
+            string parseLine;
+            while(currentLine.compare("NewBasis") != 0 && currentLine.compare("BasisCentres") != 0){ // Gather basis info
+                if(previous.compare("NewBasis") == 0){ // Get nurb info
+                   parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   actualRL = atof(parseLine.c_str());
+                   currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   actualRR = atof(parseLine.c_str());
+                   currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   centerOffset = atof(parseLine.c_str());
+                   currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   isRelativeRadius = atoi(parseLine.c_str());
+                   currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   relativeRL = atof(parseLine.c_str());
+                   currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   relativeRR = atof(parseLine.c_str());
+                   currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   order = atoi(parseLine.c_str());
+                   currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   uniform = atof(parseLine.c_str());
+                   qDebug() << actualRL << " " << actualRR << " " << centerOffset << " " << isRelativeRadius << " " << relativeRL << " " << relativeRR << " " << order << " " << uniform;
                 }
-                else{
-                    string parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                else{ // Get Nurb Control Points
+                    parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
                     double currentWeight = atof(parseLine.c_str());
                     currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
                     float x = atof(parseLine.c_str());
@@ -97,19 +127,47 @@ Pup FileIO::loadData(string fileName){
                     float y = atof(parseLine.c_str());
                     currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
                     float z = atof(parseLine.c_str());
-                    Weights.push_back(currentWeight);
-
+                    nurbWeights.push_back(currentWeight);
+                    qDebug() << currentWeight << ' ' << x << ' ' << y << ' ' << z;
                     NurbPoints.push_back(Point(x, y, z));
                 }
+                previous = currentLine;
+                getline(infile, currentLine);
             }
-            //BasisFunctions.push_back(currentBasis);
+            //NurbPoints = vector<Point>();
+            //nurbWeights = vector<double>();
+            //order = 3;
+            //uniform = true;
+            Nurbs currentNurb = Nurbs(NurbPoints, nurbWeights, order, uniform);
+            //NurbPoints.clear();
+            //nurbWeights.clear();
+
+            currentNurb.order = order;
+            currentNurb.uniform = uniform;
+            PupBasis currentBasis = PupBasis(currentNurb, relativeRL, relativeRR, isRelativeRadius);
+            currentBasis.actual_radius_left = actualRL;
+            currentBasis.actual_radius_right = actualRR;
+            currentBasis.center_offset = centerOffset;
+            BasisFunctions.push_back(currentBasis);
+
         }
+
+        getline(infile, currentLine);
+        while(currentLine.compare("EndOfFile") != 0){
+
+            double currentCenter = atof(currentLine.c_str());
+            qDebug() << currentCenter;
+            BasisCenters.push_back(currentCenter);
+            getline(infile,currentLine);
+        }
+
 
         infile.close();
     }
-
+    qDebug() << "blarg";
 
     Pup pupCurve = Pup(ControlPoints, BasisFunctions, Weights);
     pupCurve.basis_centers = BasisCenters;
+    qDebug() << "honk";
     return pupCurve;
 }
