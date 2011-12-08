@@ -23,10 +23,7 @@ public:
     //call this for a single point along the curve
     Point getSinglePoint(double u);
 
-    Point left_most;
-    Point right_most;
-    Point top_most;
-    Point bottom_most;
+    Point left_most, right_most, top_most, bottom_most;
 
 private:
     double nFunc(int i, double u, int order, int depth = 0);

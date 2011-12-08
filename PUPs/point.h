@@ -22,6 +22,7 @@ class Point{
 	float x,y,z;
 	Point();
 	Point(float, float, float);
+        ~Point();
 
 	//operator overloading operations
 	Point operator +(Point) const;

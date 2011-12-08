@@ -18,10 +18,6 @@
 #include <QMouseEvent>
 #include "Point.h"
 #include "Pup.h"
-#include "PupBasis.h"
-#include "controlpoint.h"
-#include "state.h"
-#include "fileio.h"
 
 class Renderer : public QGLWidget
 {
@@ -40,10 +36,6 @@ signals:
 public slots:
 	
     void updateMe(int origin_pane);
-    void undo();
-    void redo();
-    void saveSlot();
-    void loadSlot();
 
 protected:
 
@@ -63,8 +55,6 @@ private:
     //Stuff shared between all render panes or only needed for one.
         //all render panes will need this
         static Pup pup_curve;
-        //needed by Pup Curve pane only; used when adding new control points.
-        static PupBasis default_basis;
 
         //to keep track of the pane that currently has mouse focus
         static int currently_focused_pane;
@@ -82,63 +72,42 @@ private:
         static Point lastMousePress;
         static Point lastMousePosition;
 
-        //all the panes need to know which pup control point is currently selected
-        static int selected_pup_point_index;
-        static int selectable_pup_point_index;
-        //only the basis editor pane needs to know which basis control points are selected
-        static int selected_basis_point_index;
-        static int selectable_basis_point_index;
-        //to be used by pup curve and basis editor panes
-        static float selection_radius;
-        //index to be used when editing a specific basis function
-        static int selected_nurb_basis_index;
-
-        //change of states
-        vector<State> states;
-        int stateIndex;
-
-        //control point information
-        vector<ControlPoint> ControlPoints;
-
     //Stuff each render pane needs.
         int this_pane_type;
 
     //Pane specific mouse handlers
-        void mousePressPupPane();
-        void mousePressParameterPane();
-        void mousePressBasisPane();
-        void mousePressProjectionPane();
+        void mousePressPupPane( QMouseEvent *e );
+        void mousePressParameterPane( QMouseEvent *e );
+        void mousePressProjectionPane( QMouseEvent *e );
 
         void mouseReleasePupPane();
         void mouseReleaseParameterPane();
-        void mouseReleaseBasisPane();
         void mouseReleaseProjectionPane();
 
         void mouseMovePupPane();
         void mouseMoveParameterPane();
-        void mouseMoveBasisPane();
         void mouseMoveProjectionPane();
 
     //Pane specific drawing functions
         void drawPupPane();
         void drawParameterPane();
         void drawProjectionPane();
-        void drawBasisPane();
 
     // additional drawing functions
         void drawMousePos();
-        void draw2DGrid(float,float,float,Point);
+        void draw2DGrid(float,Point);
         void draw2DBorder(float,Point);
 
     //constructor helpers
-        void setupDefaultBasis();
         void setupFrustum();
 
     //signal wrappers
         void updateOtherPanes();
 
-   //Basis modification Helpers
-        Point mapBasisCoord(Point in);
+   //dimension modification Helpers
+        Point mapPupCoord(Point in);
+        Point mapParameterCoord(Point in);
+
 };
 
 #endif 
