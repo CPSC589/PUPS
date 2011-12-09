@@ -16,13 +16,11 @@ Nurbs::Nurbs(vector<Point> _control_points, vector<double> _weights, int _order,
     order = _order;
     uniform = _uniform;
 
-    left_most = bottom_most = Point(100000,100000,0);
-    right_most = top_most = Point(-100000, -100000, 0);
-
     updateAll();
 }
 
-Nurbs::~Nurbs(){}
+Nurbs::~Nurbs(){
+}
 
 void Nurbs::updateAll()
 {
@@ -56,6 +54,9 @@ void Nurbs::updateAll()
 
 void Nurbs::updateCurve()
 {
+    left_most = bottom_most = Point(100000,100000,0);
+    right_most = top_most = Point(-100000, -100000, 0);
+
     curve_points.clear();
 
     if (uniform){

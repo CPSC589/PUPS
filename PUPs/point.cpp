@@ -6,8 +6,8 @@
 
 #include "Point.h"
 #include <cmath>
-#include <GL/glu.h>
-#include <QString>
+//#include <GL/glu.h>
+//#include <QString>
 using namespace std;
 
 //Constructors
@@ -22,6 +22,8 @@ Point::Point(float x_in, float y_in, float z_in){
 	y=y_in;
 	z=z_in;
 }
+
+Point::~Point(){}
 
 //Vector-Point Addition
 Point Point::operator +(Point a) const {
