@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Dec 9 00:51:18 2011
+** Created: Fri Dec 9 08:26:14 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -37,6 +37,7 @@ public:
     QAction *actionSave;
     QAction *actionLoad;
     QAction *actionFade;
+    QAction *actionApply_Current_Basis_to_New;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QSplitter *splitter_2;
@@ -79,6 +80,8 @@ public:
         actionFade->setObjectName(QString::fromUtf8("actionFade"));
         actionFade->setCheckable(true);
         actionFade->setChecked(false);
+        actionApply_Current_Basis_to_New = new QAction(MainWindow);
+        actionApply_Current_Basis_to_New->setObjectName(QString::fromUtf8("actionApply_Current_Basis_to_New"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout_4 = new QVBoxLayout(centralWidget);
@@ -218,6 +221,7 @@ public:
         menuApplication->addAction(actionClose);
         menuEdit->addAction(actionUndo);
         menuEdit->addAction(actionRedo);
+        menuEdit->addAction(actionApply_Current_Basis_to_New);
         menuView->addAction(actionFade);
 
         retranslateUi(MainWindow);
@@ -230,6 +234,7 @@ public:
         QObject::connect(actionUndo, SIGNAL(triggered()), glCurvePane, SLOT(undo()));
         QObject::connect(actionRedo, SIGNAL(triggered()), glCurvePane, SLOT(redo()));
         QObject::connect(actionFade, SIGNAL(toggled(bool)), glCurvePane, SLOT(fadeSlot(bool)));
+        QObject::connect(actionApply_Current_Basis_to_New, SIGNAL(triggered()), glCurvePane, SLOT(applyBasisSlot()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -245,6 +250,7 @@ public:
         actionSave->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         actionLoad->setText(QApplication::translate("MainWindow", "Load", 0, QApplication::UnicodeUTF8));
         actionFade->setText(QApplication::translate("MainWindow", "Fade", 0, QApplication::UnicodeUTF8));
+        actionApply_Current_Basis_to_New->setText(QApplication::translate("MainWindow", "Make Current Basis Default", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "PUPs Curve Editor:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glCurvePane->setAccessibleName(QString());

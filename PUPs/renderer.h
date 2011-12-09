@@ -44,6 +44,7 @@ public slots:
     void saveSlot();
     void loadSlot();
     void fadeSlot(bool checked);
+    void applyBasisSlot();
 
 protected:
 

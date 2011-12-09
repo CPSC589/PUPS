@@ -77,7 +77,6 @@ void Renderer::paintGL()
     if (this_pane_type == CURVE_PANE){
         drawPupPane();
         if (drawFadeSelected && (stateIndex > 0)){
-            qDebug() << "debug";
             drawFade();
         }
     }
@@ -364,9 +363,16 @@ void Renderer::mousePressPupPane( QMouseEvent *e )
     }
 }
 
-void Renderer::wheelEvent( QWheelEvent *e ){
+void Renderer::wheelEvent( QWheelEvent *e ){ // Attempting to allow the change of weights, but it appears
+                                             // Andrews calculations do not currently use the weights.
     int changeValue = e->delta();
-    qDebug() << "change Value: " << changeValue;
+    int indexOfPoint = pup_curve.selectable_point_index;
+    double oldWeight = pup_curve.weights[indexOfPoint];
+    double modifiedWeight = oldWeight + (1/(double)changeValue);
+    pup_curve.modifyControlPointWeight(modifiedWeight, indexOfPoint);
+    qDebug() << "change Value: " << changeValue << " modifiedWeight: " << modifiedWeight;
+    updateGL();
+    updateOtherPanes();
 }
 
 void Renderer::mousePressParameterPane( QMouseEvent *e )
@@ -402,7 +408,6 @@ void Renderer::mouseReleaseEvent( QMouseEvent *e )
     if (this_pane_type == CURVE_PANE) mouseReleasePupPane();
     else if (this_pane_type == PARAMETER_PANE) mouseReleaseParameterPane();
     else if (this_pane_type == PROJECTION_PANE) mouseReleaseProjectionPane();
-    qDebug() << "shnoockums";
     updateStates();
 }
 
@@ -516,12 +521,19 @@ void Renderer::fadeSlot(bool checked){
 }
 
 
+void Renderer::applyBasisSlot(){
+    int indexOfBasis = pup_curve.selected_point_index;
+    pup_curve.default_basis = pup_curve.basis_functions[indexOfBasis];
+    updateGL();
+    updateOtherPanes();
+}
+
+
 // When the user presses Control Z or presses the undo button,
 // the program loads the last known state that the system was in.
 // There must be a previous state to do so.
 
 void Renderer::undo(){
-    qDebug() << "undoed!";
     if(stateIndex - 1 >= 0){
         Pup currentState = states[stateIndex-1];
         pup_curve = currentState;
@@ -537,7 +549,6 @@ void Renderer::undo(){
 // the program loads the next known state that the system was in.
 // There must be a known next state to do so.
 void Renderer::redo(){
-    qDebug() << "redoed!";
     if(stateIndex + 1 < states.size()){
         Pup currentState = states[stateIndex+1];
         pup_curve = currentState;

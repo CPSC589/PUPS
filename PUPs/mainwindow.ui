@@ -280,6 +280,7 @@
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
+    <addaction name="actionApply_Current_Basis_to_New"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -334,6 +335,11 @@
     <string>Fade</string>
    </property>
   </action>
+  <action name="actionApply_Current_Basis_to_New">
+   <property name="text">
+    <string>Make Current Basis Default</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -350,6 +356,7 @@
     <slot>saveSlot()</slot>
     <slot>loadSlot()</slot>
     <slot>fadeSlot(bool)</slot>
+    <slot>applyBasisSlot()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -488,6 +495,22 @@
    <signal>toggled(bool)</signal>
    <receiver>glCurvePane</receiver>
    <slot>fadeSlot(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>236</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionApply_Current_Basis_to_New</sender>
+   <signal>triggered()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>applyBasisSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
