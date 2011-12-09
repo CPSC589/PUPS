@@ -91,7 +91,6 @@ Pup FileIO::loadData(string fileName){
             getline(infile, currentLine);
         }
         defaultBasis = Nurbs(defaultCPs, defaultWeights, defaultOrder, defaultUniform);
-        qDebug() << "You know it!";
         getline(infile, currentLine);
         while(currentLine.compare("BasisFunctions") != 0){ // Parse ControlPoints
             string parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
@@ -108,7 +107,6 @@ Pup FileIO::loadData(string fileName){
         }
 
         getline(infile, currentLine);
-        qDebug() << "Double Time!";
         while(currentLine.compare("EndOfFile") != 0){
             string previous = currentLine;
             getline(infile, currentLine);
@@ -146,7 +144,6 @@ Pup FileIO::loadData(string fileName){
         }
 
         infile.close();
-        qDebug() << "Smorgesborg";
     }
 
     Pup pupCurve = Pup(defaultBasis, defaultWeight, uInc, ControlPoints, basisFunctions, Weights);

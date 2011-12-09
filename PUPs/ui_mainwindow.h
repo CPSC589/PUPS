@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Dec 8 19:12:36 2011
+** Created: Fri Dec 9 00:51:18 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -36,6 +36,7 @@ public:
     QAction *actionRedo;
     QAction *actionSave;
     QAction *actionLoad;
+    QAction *actionFade;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QSplitter *splitter_2;
@@ -55,6 +56,7 @@ public:
     QMenuBar *menuBar;
     QMenu *menuApplication;
     QMenu *menuEdit;
+    QMenu *menuView;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -73,6 +75,10 @@ public:
         actionSave->setObjectName(QString::fromUtf8("actionSave"));
         actionLoad = new QAction(MainWindow);
         actionLoad->setObjectName(QString::fromUtf8("actionLoad"));
+        actionFade = new QAction(MainWindow);
+        actionFade->setObjectName(QString::fromUtf8("actionFade"));
+        actionFade->setCheckable(true);
+        actionFade->setChecked(false);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout_4 = new QVBoxLayout(centralWidget);
@@ -197,6 +203,8 @@ public:
         menuApplication->setObjectName(QString::fromUtf8("menuApplication"));
         menuEdit = new QMenu(menuBar);
         menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
+        menuView = new QMenu(menuBar);
+        menuView->setObjectName(QString::fromUtf8("menuView"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -204,11 +212,13 @@ public:
 
         menuBar->addAction(menuApplication->menuAction());
         menuBar->addAction(menuEdit->menuAction());
+        menuBar->addAction(menuView->menuAction());
         menuApplication->addAction(actionSave);
         menuApplication->addAction(actionLoad);
         menuApplication->addAction(actionClose);
         menuEdit->addAction(actionUndo);
         menuEdit->addAction(actionRedo);
+        menuView->addAction(actionFade);
 
         retranslateUi(MainWindow);
         QObject::connect(actionClose, SIGNAL(triggered()), MainWindow, SLOT(close()));
@@ -219,6 +229,7 @@ public:
         QObject::connect(actionSave, SIGNAL(triggered()), glCurvePane, SLOT(saveSlot()));
         QObject::connect(actionUndo, SIGNAL(triggered()), glCurvePane, SLOT(undo()));
         QObject::connect(actionRedo, SIGNAL(triggered()), glCurvePane, SLOT(redo()));
+        QObject::connect(actionFade, SIGNAL(toggled(bool)), glCurvePane, SLOT(fadeSlot(bool)));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -228,9 +239,12 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
         actionClose->setText(QApplication::translate("MainWindow", "Close", 0, QApplication::UnicodeUTF8));
         actionUndo->setText(QApplication::translate("MainWindow", "Undo", 0, QApplication::UnicodeUTF8));
+        actionUndo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Z", 0, QApplication::UnicodeUTF8));
         actionRedo->setText(QApplication::translate("MainWindow", "Redo", 0, QApplication::UnicodeUTF8));
+        actionRedo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Y", 0, QApplication::UnicodeUTF8));
         actionSave->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
         actionLoad->setText(QApplication::translate("MainWindow", "Load", 0, QApplication::UnicodeUTF8));
+        actionFade->setText(QApplication::translate("MainWindow", "Fade", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "PUPs Curve Editor:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glCurvePane->setAccessibleName(QString());
@@ -245,6 +259,7 @@ public:
 #endif // QT_NO_ACCESSIBILITY
         menuApplication->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
+        menuView->setTitle(QApplication::translate("MainWindow", "View", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

@@ -304,7 +304,7 @@ void Pup::addBasisControlPoint(Point _cp, double _weight)
             if ((_cp.x > basis_functions[selected_point_index].control_points[i].x)&&(_cp.x < basis_functions[selected_point_index].control_points[i+1].x)){
                 basis_functions[selected_point_index].control_points.insert(basis_functions[selected_point_index].control_points.begin()+i+1,_cp);
                 basis_functions[selected_point_index].weights.insert(basis_functions[selected_point_index].weights.begin()+i+1,_weight);
-                selected_basis_point_index = i;
+                selected_basis_point_index = i+1;
                 break;
             }
         }

@@ -71,10 +71,20 @@ void Renderer::paintGL()
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );    
     glLoadIdentity();
 
+
+
     //call the appropriate drawing function based on the current pane type
-    if (this_pane_type == CURVE_PANE) drawPupPane();
+    if (this_pane_type == CURVE_PANE){
+        drawPupPane();
+        if (drawFadeSelected && (stateIndex > 0)){
+            qDebug() << "debug";
+            drawFade();
+        }
+    }
     else if (this_pane_type == PARAMETER_PANE) drawParameterPane();
     else if (this_pane_type == PROJECTION_PANE) drawProjectionPane();
+
+
 
     draw2DGrid(1,Point(0.9,0.9,0.9));
 
@@ -85,6 +95,7 @@ void Renderer::initializeGL()
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
     glEnable(GL_DEPTH_TEST);
     glClearColor(1, 1, 1, 1);
+    stateIndex = -1; drawFadeSelected = false;
 }
 void Renderer::resizeGL( int w, int h )
 {
@@ -205,7 +216,7 @@ void Renderer::drawParameterPane()
 
         //non normalised curve
         glLineWidth(2);
-        glColor3f(0,0,0);
+        glColor3f(0,1,0);
         glBegin(GL_LINE_STRIP);
         //loop through the influences
         bool zero_influence = false;
@@ -251,7 +262,7 @@ void Renderer::drawParameterPane()
         }
         cur_u = 0.0;
         //non normalised
-        glColor3f(0.8,0.8,0.8);
+        glColor3f(0,0,0);
         glLineWidth(1);
         glBegin(GL_LINE_STRIP);
         //loop through the influences
@@ -327,6 +338,11 @@ void Renderer::mousePressPupPane( QMouseEvent *e )
     }
 }
 
+void Renderer::wheelEvent( QWheelEvent *e ){
+    int changeValue = e->delta();
+    qDebug() << "change Value: " << changeValue;
+}
+
 void Renderer::mousePressParameterPane( QMouseEvent *e )
 {
     Point temp = mapParameterCoord(lastMousePress);
@@ -360,6 +376,8 @@ void Renderer::mouseReleaseEvent( QMouseEvent *e )
     if (this_pane_type == CURVE_PANE) mouseReleasePupPane();
     else if (this_pane_type == PARAMETER_PANE) mouseReleaseParameterPane();
     else if (this_pane_type == PROJECTION_PANE) mouseReleaseProjectionPane();
+    qDebug() << "shnoockums";
+    updateStates();
 }
 
 void Renderer::mouseReleasePupPane()
@@ -459,6 +477,19 @@ void Renderer::updateOtherPanes(){
     emit updateNext(this_pane_type);
 }
 
+
+void Renderer::fadeSlot(bool checked){
+    if(checked){
+        drawFadeSelected = true;
+    }
+    else{
+        drawFadeSelected = false;
+    }
+    updateGL();
+    updateOtherPanes();
+}
+
+
 // When the user presses Control Z or presses the undo button,
 // the program loads the last known state that the system was in.
 // There must be a previous state to do so.
@@ -466,11 +497,14 @@ void Renderer::updateOtherPanes(){
 void Renderer::undo(){
     qDebug() << "undoed!";
     if(stateIndex - 1 >= 0){
-        State currentState = states[stateIndex-1];
-        pup_curve = currentState.getPupCurve();
+        Pup currentState = states[stateIndex-1];
+        pup_curve = currentState;
+        pup_curve.selected_point_index = currentState.selected_point_index;
+        pup_curve.selected_basis_point_index = currentState.selected_basis_point_index;
         stateIndex -= 1;
     }
     updateGL();
+    updateOtherPanes();
 }
 
 // When the user presses Control Y or presses the undo button,
@@ -479,11 +513,14 @@ void Renderer::undo(){
 void Renderer::redo(){
     qDebug() << "redoed!";
     if(stateIndex + 1 < states.size()){
-        State currentState = states[stateIndex+1];
-        pup_curve = currentState.getPupCurve();
+        Pup currentState = states[stateIndex+1];
+        pup_curve = currentState;
+        pup_curve.selected_point_index = currentState.selected_point_index;
+        pup_curve.selected_basis_point_index = currentState.selected_basis_point_index;
         stateIndex += 1;
     }
     updateGL();
+    updateOtherPanes();
 }
 
 void Renderer::saveSlot(){
@@ -553,6 +590,28 @@ void Renderer::setupFrustum()
     }
 }
 
+void Renderer::updateStates(){
+
+
+    if(states.size() == 20){
+        states.erase(states.begin());
+    }
+    else{
+        stateIndex += 1;
+    }
+
+
+    int timesToPop = states.size() - stateIndex;
+    for(int i = 0; i < timesToPop; i++){
+        states.pop_back();
+    }
+
+    states.push_back(pup_curve);
+    updateGL();
+    updateOtherPanes();
+
+}
+
 //=================================================================
 // DRAWING HELPER FUNCTIONS
 //=================================================================
@@ -592,5 +651,28 @@ void Renderer::drawMousePos()
     debug_string.append(  QString::number(lastMousePosition.y) );
     const QString c_debug_string = debug_string;
     renderText(x(),y(),c_debug_string);
+}
+
+void Renderer::drawFade()
+{
+    //setup the orthographic viewing matrix
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    gluOrtho2D(0,  1, 1, 0);
+    glMatrixMode( GL_MODELVIEW );
+
+    //for making glVertex calls more readable
+    Point current_point = Point();
+    Pup pupCurve = states[stateIndex-1];
+
+    //draw the pup curve
+    glLineWidth(1);
+    glColor3f(0.8,0.8,0.8);
+    glBegin(GL_LINE_STRIP);
+        for (unsigned int i = 0; i < pupCurve.curve_points.size(); i++){
+            current_point = pupCurve.curve_points[i];
+            glVertex2d(current_point.x, current_point.y);
+        }
+    glEnd();
 }
 

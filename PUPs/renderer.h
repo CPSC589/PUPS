@@ -43,6 +43,7 @@ public slots:
     void redo();
     void saveSlot();
     void loadSlot();
+    void fadeSlot(bool checked);
 
 protected:
 
@@ -56,6 +57,7 @@ protected:
         void mousePressEvent( QMouseEvent *e);
         void mouseReleaseEvent( QMouseEvent *e);
         void mouseMoveEvent( QMouseEvent *e);
+        void wheelEvent( QWheelEvent *e );
 
 private:
 
@@ -80,8 +82,10 @@ private:
         static Point lastMousePosition;
 
         //change of states
-        vector<State> states;
+        vector<Pup> states;
         int stateIndex;
+        void updateStates();
+        bool drawFadeSelected;
 
     //Stuff each render pane needs.
         int this_pane_type;
@@ -103,6 +107,7 @@ private:
         void drawPupPane();
         void drawParameterPane();
         void drawProjectionPane();
+        void drawFade();
 
     // additional drawing functions
         void drawMousePos();
