@@ -93,13 +93,18 @@ void Renderer::paintGL()
 void Renderer::initializeGL()
 {
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);    
     glClearColor(1, 1, 1, 1);
     stateIndex = -1; drawFadeSelected = false;
 }
 void Renderer::resizeGL( int w, int h )
 {
-    if(width()>=height()){
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+
+   if(width()>=height()){
             double ratio = width()/(double)height();
             frustum_data[0] = -1.0*ratio;
             frustum_data[1] = ratio;
@@ -114,6 +119,8 @@ void Renderer::resizeGL( int w, int h )
             frustum_data[2] = -1.0*ratio;
             frustum_data[3] = ratio;
     }
+
+    glMatrixMode(GL_MODELVIEW);
     updateOtherPanes();
 }
 
@@ -295,11 +302,30 @@ void Renderer::drawProjectionPane()
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glFrustum(frustum_data[0],frustum_data[1],frustum_data[2],frustum_data[3],frustum_data[4],frustum_data[5]);
+
     glMatrixMode( GL_MODELVIEW );
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    /*gluLookAt(0, 0, -0.3, // Eye/camera position
+              0, 0, -1.0,     // Look-at position
+              1.0, 0.0, 0.0);    // "Up" vector*/
+
     //make curve visible
     //glTranslatef(0,0,-5);
 
     //draw 3d and 2d simultaneously for control points, and one after the other for the curve
+
+    Point current_point = Point();
+    //draw the pup curve
+    glLineWidth(2);
+    glColor3f(0,0,1);
+    glBegin(GL_LINE_STRIP);
+    for (unsigned int i = 0; i < pup_curve.curve_points.size(); i++){
+            current_point = pup_curve.curve_points[i];
+            glVertex3d(current_point.x, current_point.y, -1);
+        //glVertex3d(frustum_data[0], frustum_data[2], -1);
+        //glVertex3d(frustum_data[1], frustum_data[3], -1);
+    }
+    glEnd();
 }
 
 
@@ -571,8 +597,8 @@ void Renderer::loadSlot(){
 
 void Renderer::setupFrustum()
 {
-    frustum_data[4] = 2.0;
-    frustum_data[5] = 1000.0;
+    frustum_data[4] = 0.5;
+    frustum_data[5] = 10.0;
 
     if(width()>=height()){
             double ratio = width()/(double)height();
