@@ -4,16 +4,16 @@
 #include <Point.h>
 #include <vector>
 #include "controlpoint.h"
-
+#include "pup.h"
 
 class State
 {
 public:
-    State();
-    void saveControlPoints(vector<ControlPoint> ctrlPoints);
-    vector<ControlPoint> loadControlPoints();
+    State(Pup pupCurve);
+    Pup getPupCurve();
+
 private:
-    vector<ControlPoint> ControlPoints;
+    Pup PupCurve;
 };
 
 #endif // STATE_H

@@ -625,7 +625,8 @@ void Renderer::undo(){
     qDebug() << "undoed!";
     if(stateIndex - 1 >= 0){
         State currentState = states[stateIndex-1];
-        ControlPoints = currentState.loadControlPoints();
+        pup_curve = currentState.getPupCurve();
+        stateIndex -= 1;
     }
     updateGL();
 }
@@ -637,7 +638,8 @@ void Renderer::redo(){
     qDebug() << "redoed!";
     if(stateIndex + 1 < states.size()){
         State currentState = states[stateIndex+1];
-        ControlPoints = currentState.loadControlPoints();
+        pup_curve = currentState.getPupCurve();
+        stateIndex += 1;
     }
     updateGL();
 }
@@ -647,7 +649,7 @@ void Renderer::saveSlot(){
     QWidget* widget = new QWidget();
     QDir* dir = new QDir();
     QString currentPath = dir->currentPath();
-    QFileDialog* saveDialog = new QFileDialog(widget,"Blarg",currentPath,".cps");
+    QFileDialog* saveDialog = new QFileDialog(widget,"Save",currentPath,".pups");
     QString fileName = saveDialog->getSaveFileName();
     vector<ControlPoint> CPs = vector<ControlPoint>();
     vector<Point> inputControlPoints = pup_curve.control_points;
@@ -671,8 +673,8 @@ void Renderer::loadSlot(){
     QWidget* widget = new QWidget();
     QDir* dir = new QDir();
     QString currentPath = dir->currentPath();
-    QFileDialog* saveDialog = new QFileDialog(widget,"Blarg",currentPath,".cps");
-    QString fileName = saveDialog->getOpenFileName();
+    QFileDialog* loadDialog = new QFileDialog(widget,"Load",currentPath,".pups");
+    QString fileName = loadDialog->getOpenFileName();
     Pup pupCurve = inputIO.loadData(fileName.toStdString());
     pup_curve = pupCurve;
     //pup_curve.updateAll();

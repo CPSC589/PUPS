@@ -10,14 +10,11 @@
 // created.  This is used to allow for an undo-redo feature, along
 // with a fade feature.
 //=================================================================
-State::State()
+State::State(Pup pupCurve)
 {
+    PupCurve = pupCurve;
 }
 
-void State::saveControlPoints(vector<ControlPoint> ctrlPoints){
-    ControlPoints = ctrlPoints;
-}
-
-vector<ControlPoint> State::loadControlPoints(){
-    return ControlPoints;
+Pup State::getPupCurve(){
+    return PupCurve;
 }

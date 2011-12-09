@@ -8,7 +8,7 @@ FileIO::FileIO()
 
 void FileIO::saveData(vector<ControlPoint> ControlPoints, vector<PupBasis> basisFunctions, vector<double> basisCentres, string fileName){
     ofstream outFile;
-    outFile.open((fileName + ".cps").c_str());
+    outFile.open((fileName + ".pups").c_str());
     if (outFile.is_open()) {
         outFile << "ControlPoints\n"; // Saving the control point information
         for(int i = 0; i < ControlPoints.size(); i++){
