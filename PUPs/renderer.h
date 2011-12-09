@@ -18,6 +18,9 @@
 #include <QMouseEvent>
 #include "Point.h"
 #include "Pup.h"
+#include "state.h"
+#include "fileio.h"
+#include "controlpoint.h"
 
 class Renderer : public QGLWidget
 {
@@ -36,6 +39,10 @@ signals:
 public slots:
 	
     void updateMe(int origin_pane);
+    void undo();
+    void redo();
+    void saveSlot();
+    void loadSlot();
 
 protected:
 
@@ -71,6 +78,10 @@ private:
         static bool mouseDown;
         static Point lastMousePress;
         static Point lastMousePosition;
+
+        //change of states
+        vector<State> states;
+        int stateIndex;
 
     //Stuff each render pane needs.
         int this_pane_type;

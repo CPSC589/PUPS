@@ -459,6 +459,74 @@ void Renderer::updateOtherPanes(){
     emit updateNext(this_pane_type);
 }
 
+// When the user presses Control Z or presses the undo button,
+// the program loads the last known state that the system was in.
+// There must be a previous state to do so.
+
+void Renderer::undo(){
+    qDebug() << "undoed!";
+    if(stateIndex - 1 >= 0){
+        State currentState = states[stateIndex-1];
+        pup_curve = currentState.getPupCurve();
+        stateIndex -= 1;
+    }
+    updateGL();
+}
+
+// When the user presses Control Y or presses the undo button,
+// the program loads the next known state that the system was in.
+// There must be a known next state to do so.
+void Renderer::redo(){
+    qDebug() << "redoed!";
+    if(stateIndex + 1 < states.size()){
+        State currentState = states[stateIndex+1];
+        pup_curve = currentState.getPupCurve();
+        stateIndex += 1;
+    }
+    updateGL();
+}
+
+void Renderer::saveSlot(){
+    FileIO outputIO = FileIO();
+    QWidget* widget = new QWidget();
+    QDir* dir = new QDir();
+    QString currentPath = dir->currentPath();
+    QFileDialog* saveDialog = new QFileDialog(widget,"Save",currentPath,".pups");
+    QString fileName = saveDialog->getSaveFileName();
+    vector<ControlPoint> CPs = vector<ControlPoint>();
+    vector<Point> inputControlPoints = pup_curve.control_points;
+    vector<double> weights = pup_curve.weights;
+
+    for(int i = 0; i < inputControlPoints.size(); i++){
+        ControlPoint newCP = ControlPoint(inputControlPoints[i]);
+        newCP.changeWeight(weights[i]);
+        CPs.push_back(newCP);
+    }
+
+    Nurbs defaultBasis = pup_curve.default_basis;
+    double defaultWeight = pup_curve.default_weight;
+    double uInc = pup_curve.u_increment;
+    vector<Nurbs> basisFunctions = pup_curve.basis_functions;
+
+    outputIO.saveData(defaultBasis, defaultWeight, uInc, CPs, basisFunctions, fileName.toStdString());
+
+    //updateGL(); Don't really need this update.
+}
+
+void Renderer::loadSlot(){
+    FileIO inputIO = FileIO();
+    QWidget* widget = new QWidget();
+    QDir* dir = new QDir();
+    QString currentPath = dir->currentPath();
+    QFileDialog* loadDialog = new QFileDialog(widget,"Load",currentPath,".pups");
+    QString fileName = loadDialog->getOpenFileName();
+    Pup pupCurve = inputIO.loadData(fileName.toStdString());
+    pup_curve = pupCurve;
+    //pup_curve.updateAll();
+    //pup_curve.updateCurve();
+    updateGL();
+}
+
 
 //=================================================================
 // ENGINE HELPER FUNCTIONS

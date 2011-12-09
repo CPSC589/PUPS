@@ -130,7 +130,7 @@ void Pup::addControlPoint(Point _cp)
     }
     updateBasisInfluences();
 }
-    if (normalising_denominator == 0)
+    //if (normalising_denominator == 0)
 
 void Pup::removeControlPoint(int _index)
 {

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Dec 8 00:31:31 2011
+** Created: Thu Dec 8 19:12:36 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -32,6 +32,10 @@ class Ui_MainWindow
 {
 public:
     QAction *actionClose;
+    QAction *actionUndo;
+    QAction *actionRedo;
+    QAction *actionSave;
+    QAction *actionLoad;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QSplitter *splitter_2;
@@ -61,6 +65,14 @@ public:
         MainWindow->setMinimumSize(QSize(400, 300));
         actionClose = new QAction(MainWindow);
         actionClose->setObjectName(QString::fromUtf8("actionClose"));
+        actionUndo = new QAction(MainWindow);
+        actionUndo->setObjectName(QString::fromUtf8("actionUndo"));
+        actionRedo = new QAction(MainWindow);
+        actionRedo->setObjectName(QString::fromUtf8("actionRedo"));
+        actionSave = new QAction(MainWindow);
+        actionSave->setObjectName(QString::fromUtf8("actionSave"));
+        actionLoad = new QAction(MainWindow);
+        actionLoad->setObjectName(QString::fromUtf8("actionLoad"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout_4 = new QVBoxLayout(centralWidget);
@@ -192,13 +204,21 @@ public:
 
         menuBar->addAction(menuApplication->menuAction());
         menuBar->addAction(menuEdit->menuAction());
+        menuApplication->addAction(actionSave);
+        menuApplication->addAction(actionLoad);
         menuApplication->addAction(actionClose);
+        menuEdit->addAction(actionUndo);
+        menuEdit->addAction(actionRedo);
 
         retranslateUi(MainWindow);
         QObject::connect(actionClose, SIGNAL(triggered()), MainWindow, SLOT(close()));
         QObject::connect(glParameterPane, SIGNAL(updateNext(int)), glCurvePane, SLOT(updateMe(int)));
         QObject::connect(glCurvePane, SIGNAL(updateNext(int)), glProjectionPane, SLOT(updateMe(int)));
         QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
+        QObject::connect(actionLoad, SIGNAL(triggered()), glCurvePane, SLOT(loadSlot()));
+        QObject::connect(actionSave, SIGNAL(triggered()), glCurvePane, SLOT(saveSlot()));
+        QObject::connect(actionUndo, SIGNAL(triggered()), glCurvePane, SLOT(undo()));
+        QObject::connect(actionRedo, SIGNAL(triggered()), glCurvePane, SLOT(redo()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -207,6 +227,10 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
         actionClose->setText(QApplication::translate("MainWindow", "Close", 0, QApplication::UnicodeUTF8));
+        actionUndo->setText(QApplication::translate("MainWindow", "Undo", 0, QApplication::UnicodeUTF8));
+        actionRedo->setText(QApplication::translate("MainWindow", "Redo", 0, QApplication::UnicodeUTF8));
+        actionSave->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
+        actionLoad->setText(QApplication::translate("MainWindow", "Load", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "PUPs Curve Editor:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glCurvePane->setAccessibleName(QString());
