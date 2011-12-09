@@ -226,7 +226,7 @@ void Pup::modifyCurrentControlPointPosition(Point _new_position){
 
 void Pup::modifyControlPointWeight(double _weight, int _index){
     weights[_index] = _weight;
-    updateCurvePoints();
+    updateBasisInfluences();
 }
 
 void Pup::modifyCurrentControlPointWeight(double _weight){

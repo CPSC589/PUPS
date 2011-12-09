@@ -363,16 +363,25 @@ void Renderer::mousePressPupPane( QMouseEvent *e )
     }
 }
 
-void Renderer::wheelEvent( QWheelEvent *e ){ // Attempting to allow the change of weights, but it appears
-                                             // Andrews calculations do not currently use the weights.
+void Renderer::wheelEvent( QWheelEvent *e ){
     int changeValue = e->delta();
     int indexOfPoint = pup_curve.selectable_point_index;
-    double oldWeight = pup_curve.weights[indexOfPoint];
-    double modifiedWeight = oldWeight + (1/(double)changeValue);
-    pup_curve.modifyControlPointWeight(modifiedWeight, indexOfPoint);
-    qDebug() << "change Value: " << changeValue << " modifiedWeight: " << modifiedWeight;
-    updateGL();
-    updateOtherPanes();
+    int indexOfBasisPoint = pup_curve.selectable_basis_point_index;
+    if(pup_curve.control_points.size() > 0 && indexOfPoint != -1){
+        double oldWeight = pup_curve.weights[indexOfPoint];
+        double modifiedWeight = oldWeight + 20*(1/(double)changeValue);
+        pup_curve.modifyControlPointWeight(modifiedWeight, indexOfPoint);
+        updateGL();
+        updateOtherPanes();
+    }
+    if(pup_curve.control_points.size() > 0 && indexOfBasisPoint != -1){
+        Nurbs nurb = pup_curve.basis_functions[pup_curve.selected_point_index];
+        double oldWeight = nurb.weights[indexOfBasisPoint];
+        double modifiedWeight = oldWeight + 20*(1/(double)changeValue);
+        pup_curve.modifyBasisControlPointWeight(modifiedWeight, indexOfBasisPoint);
+        updateGL();
+        updateOtherPanes();
+    }
 }
 
 void Renderer::mousePressParameterPane( QMouseEvent *e )
