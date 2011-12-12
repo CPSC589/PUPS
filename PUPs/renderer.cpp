@@ -137,7 +137,7 @@ void Renderer::drawPupPane()
     //draw selected control point
     if (pup_curve.selected_point_index != -1){
         current_point = pup_curve.control_points[pup_curve.selected_point_index];
-        glPointSize(8);
+        glPointSize(pup_curve.weights[pup_curve.selected_point_index]*6);
         glColor3f(0,1,0);
         glBegin(GL_POINTS);
             glVertex2d(current_point.x, current_point.y);
@@ -147,7 +147,7 @@ void Renderer::drawPupPane()
     //draw selectable control point
     if (pup_curve.selectable_point_index != -1){
         current_point = pup_curve.control_points[pup_curve.selectable_point_index];
-        glPointSize(8);
+        glPointSize(pup_curve.weights[pup_curve.selectable_point_index]*6);
         glColor3f(0,1,1);
         glBegin(GL_POINTS);
             glVertex2d(current_point.x, current_point.y);
@@ -155,14 +155,19 @@ void Renderer::drawPupPane()
     }
 
     //draw the rest of the control points
-    glPointSize(6);
+
     glColor3f(0,0,1);
-    glBegin(GL_POINTS);
+    //glPointSize(6);
+
         for (unsigned int i = 0; i < pup_curve.control_points.size(); i++){
+    glPointSize(pup_curve.weights[i]*6);
+            glBegin(GL_POINTS);
             current_point = pup_curve.control_points[i];
+
             glVertex2d(current_point.x, current_point.y);
+            glEnd();
         }
-    glEnd();
+
 
     //draw the pup curve
     glLineWidth(1);

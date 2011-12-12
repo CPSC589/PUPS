@@ -18,7 +18,6 @@
 #include <QMouseEvent>
 #include "Point.h"
 #include "Pup.h"
-#include "state.h"
 #include "fileio.h"
 #include "controlpoint.h"
 
