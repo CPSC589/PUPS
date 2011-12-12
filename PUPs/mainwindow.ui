@@ -272,6 +272,8 @@
     </property>
     <addaction name="actionSave"/>
     <addaction name="actionLoad"/>
+    <addaction name="actionSave_Basis_Collection"/>
+    <addaction name="actionLoad_Basis_Collection"/>
     <addaction name="actionClose"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -280,7 +282,7 @@
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
-    <addaction name="actionApply_Current_Basis_to_New"/>
+    <addaction name="actionClear_Screen"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -288,9 +290,17 @@
     </property>
     <addaction name="actionFade"/>
    </widget>
+   <widget class="QMenu" name="menuBasis">
+    <property name="title">
+     <string>Basis</string>
+    </property>
+    <addaction name="actionAdd_Selected_Basis_to_Collection"/>
+    <addaction name="actionApply_Current_Basis_to_New"/>
+   </widget>
    <addaction name="menuApplication"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
+   <addaction name="menuBasis"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionClose">
@@ -316,12 +326,12 @@
   </action>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string>Save Current State</string>
    </property>
   </action>
   <action name="actionLoad">
    <property name="text">
-    <string>Load</string>
+    <string>Load State</string>
    </property>
   </action>
   <action name="actionFade">
@@ -337,7 +347,27 @@
   </action>
   <action name="actionApply_Current_Basis_to_New">
    <property name="text">
-    <string>Make Current Basis Default</string>
+    <string>Make Selected Basis Default</string>
+   </property>
+  </action>
+  <action name="actionSave_Basis_Collection">
+   <property name="text">
+    <string>Save Basis Collection</string>
+   </property>
+  </action>
+  <action name="actionLoad_Basis_Collection">
+   <property name="text">
+    <string>Load Basis Collection</string>
+   </property>
+  </action>
+  <action name="actionAdd_Selected_Basis_to_Collection">
+   <property name="text">
+    <string>Add Selected Basis to Collection</string>
+   </property>
+  </action>
+  <action name="actionClear_Screen">
+   <property name="text">
+    <string>Clear Screen</string>
    </property>
   </action>
  </widget>
@@ -357,6 +387,9 @@
     <slot>loadSlot()</slot>
     <slot>fadeSlot(bool)</slot>
     <slot>applyBasisSlot()</slot>
+    <slot>saveCollectionSlot()</slot>
+    <slot>loadCollectionSlot()</slot>
+    <slot>clearSlot()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -511,6 +544,54 @@
    <signal>triggered()</signal>
    <receiver>glCurvePane</receiver>
    <slot>applyBasisSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>236</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSave_Basis_Collection</sender>
+   <signal>triggered()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>saveCollectionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>236</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionLoad_Basis_Collection</sender>
+   <signal>triggered()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>loadCollectionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>236</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionClear_Screen</sender>
+   <signal>triggered()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>clearSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

@@ -5,7 +5,8 @@ using namespace std;
 FileIO::FileIO()
 {
 }
-//Pup::Pup(Nurbs _default_basis, double _default_weight, double _u_increment, vector<Point> _control_points, vector<Nurbs> _basis_functions, vector<double> _weights)
+
+// Saves the current state of the program to a file
 void FileIO::saveData(Nurbs defaultBasis, double defaultWeight, double uInc, vector<ControlPoint> ControlPoints, vector<Nurbs> basisFunctions, string fileName){
     ofstream outFile;
     outFile.open((fileName + ".pups").c_str());
@@ -54,6 +55,8 @@ void FileIO::saveData(Nurbs defaultBasis, double defaultWeight, double uInc, vec
 
 }
 
+// Used to load the information that will be used to redraw a particular state the the system
+// was in when the program saved.
 Pup FileIO::loadData(string fileName){
     vector<Point> ControlPoints;
     vector<double> Weights;
@@ -107,7 +110,7 @@ Pup FileIO::loadData(string fileName){
         }
 
         getline(infile, currentLine);
-        while(currentLine.compare("EndOfFile") != 0){
+        while(currentLine.compare("EndOfFile") != 0){ // Until end of file, gather remaining basis info
             string previous = currentLine;
             getline(infile, currentLine);
             vector<Point> NurbPoints = vector<Point>();
@@ -148,4 +151,34 @@ Pup FileIO::loadData(string fileName){
 
     Pup pupCurve = Pup(defaultBasis, defaultWeight, uInc, ControlPoints, basisFunctions, Weights);
     return pupCurve;
+}
+
+void FileIO::saveCollection(vector<Nurbs> BasisCollection, string fileName){
+    ofstream outFile;
+    outFile.open((fileName + ".col").c_str());
+    if (outFile.is_open()) {
+        for(int i = 0; i < BasisCollection.size(); i++){
+            Nurbs nurb = BasisCollection[i];
+
+            // Nurbs want ControlPoints, Weights, Order, Uniform
+            outFile << "NewBasis\n";
+            outFile << nurb.order << ' ' << nurb.uniform << '\n';
+            vector<Point> nurbPoints = nurb.control_points;
+            vector<double> nurbWeights = nurb.weights;
+            for(int j = 0; j < nurbPoints.size(); j++){
+                Point currentPoint = nurbPoints[j];
+                double weight = nurbWeights[j];
+                outFile << weight << ' ' << currentPoint.x << ' ' << currentPoint.y << ' ' << currentPoint.z << '\n';
+            }
+        }
+
+
+        outFile.close();
+    }
+}
+
+vector<Nurbs> FileIO::loadCollection(){
+    vector<Nurbs> BasisCollection;
+
+    return BasisCollection;
 }

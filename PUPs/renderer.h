@@ -42,8 +42,11 @@ public slots:
     void redo();
     void saveSlot();
     void loadSlot();
+    void saveCollectionSlot();
+    void loadCollectionSlot();
     void fadeSlot(bool checked);
     void applyBasisSlot();
+    void clearSlot();
 
 protected:
 
@@ -86,6 +89,9 @@ private:
         int stateIndex;
         void updateStates();
         bool drawFadeSelected;
+
+        //Basis Collections
+        vector<Nurbs> BasisCollection;
 
     //Stuff each render pane needs.
         int this_pane_type;

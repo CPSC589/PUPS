@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Dec 9 12:54:43 2011
+** Created: Mon Dec 12 16:23:53 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -38,6 +38,10 @@ public:
     QAction *actionLoad;
     QAction *actionFade;
     QAction *actionApply_Current_Basis_to_New;
+    QAction *actionSave_Basis_Collection;
+    QAction *actionLoad_Basis_Collection;
+    QAction *actionAdd_Selected_Basis_to_Collection;
+    QAction *actionClear_Screen;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QSplitter *splitter_2;
@@ -58,6 +62,7 @@ public:
     QMenu *menuApplication;
     QMenu *menuEdit;
     QMenu *menuView;
+    QMenu *menuBasis;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -82,6 +87,14 @@ public:
         actionFade->setChecked(false);
         actionApply_Current_Basis_to_New = new QAction(MainWindow);
         actionApply_Current_Basis_to_New->setObjectName(QString::fromUtf8("actionApply_Current_Basis_to_New"));
+        actionSave_Basis_Collection = new QAction(MainWindow);
+        actionSave_Basis_Collection->setObjectName(QString::fromUtf8("actionSave_Basis_Collection"));
+        actionLoad_Basis_Collection = new QAction(MainWindow);
+        actionLoad_Basis_Collection->setObjectName(QString::fromUtf8("actionLoad_Basis_Collection"));
+        actionAdd_Selected_Basis_to_Collection = new QAction(MainWindow);
+        actionAdd_Selected_Basis_to_Collection->setObjectName(QString::fromUtf8("actionAdd_Selected_Basis_to_Collection"));
+        actionClear_Screen = new QAction(MainWindow);
+        actionClear_Screen->setObjectName(QString::fromUtf8("actionClear_Screen"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout_4 = new QVBoxLayout(centralWidget);
@@ -208,6 +221,8 @@ public:
         menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
         menuView = new QMenu(menuBar);
         menuView->setObjectName(QString::fromUtf8("menuView"));
+        menuBasis = new QMenu(menuBar);
+        menuBasis->setObjectName(QString::fromUtf8("menuBasis"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -216,13 +231,18 @@ public:
         menuBar->addAction(menuApplication->menuAction());
         menuBar->addAction(menuEdit->menuAction());
         menuBar->addAction(menuView->menuAction());
+        menuBar->addAction(menuBasis->menuAction());
         menuApplication->addAction(actionSave);
         menuApplication->addAction(actionLoad);
+        menuApplication->addAction(actionSave_Basis_Collection);
+        menuApplication->addAction(actionLoad_Basis_Collection);
         menuApplication->addAction(actionClose);
         menuEdit->addAction(actionUndo);
         menuEdit->addAction(actionRedo);
-        menuEdit->addAction(actionApply_Current_Basis_to_New);
+        menuEdit->addAction(actionClear_Screen);
         menuView->addAction(actionFade);
+        menuBasis->addAction(actionAdd_Selected_Basis_to_Collection);
+        menuBasis->addAction(actionApply_Current_Basis_to_New);
 
         retranslateUi(MainWindow);
         QObject::connect(actionClose, SIGNAL(triggered()), MainWindow, SLOT(close()));
@@ -235,6 +255,9 @@ public:
         QObject::connect(actionRedo, SIGNAL(triggered()), glCurvePane, SLOT(redo()));
         QObject::connect(actionFade, SIGNAL(toggled(bool)), glCurvePane, SLOT(fadeSlot(bool)));
         QObject::connect(actionApply_Current_Basis_to_New, SIGNAL(triggered()), glCurvePane, SLOT(applyBasisSlot()));
+        QObject::connect(actionSave_Basis_Collection, SIGNAL(triggered()), glCurvePane, SLOT(saveCollectionSlot()));
+        QObject::connect(actionLoad_Basis_Collection, SIGNAL(triggered()), glCurvePane, SLOT(loadCollectionSlot()));
+        QObject::connect(actionClear_Screen, SIGNAL(triggered()), glCurvePane, SLOT(clearSlot()));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -247,10 +270,14 @@ public:
         actionUndo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Z", 0, QApplication::UnicodeUTF8));
         actionRedo->setText(QApplication::translate("MainWindow", "Redo", 0, QApplication::UnicodeUTF8));
         actionRedo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Y", 0, QApplication::UnicodeUTF8));
-        actionSave->setText(QApplication::translate("MainWindow", "Save", 0, QApplication::UnicodeUTF8));
-        actionLoad->setText(QApplication::translate("MainWindow", "Load", 0, QApplication::UnicodeUTF8));
+        actionSave->setText(QApplication::translate("MainWindow", "Save Current State", 0, QApplication::UnicodeUTF8));
+        actionLoad->setText(QApplication::translate("MainWindow", "Load State", 0, QApplication::UnicodeUTF8));
         actionFade->setText(QApplication::translate("MainWindow", "Fade", 0, QApplication::UnicodeUTF8));
-        actionApply_Current_Basis_to_New->setText(QApplication::translate("MainWindow", "Make Current Basis Default", 0, QApplication::UnicodeUTF8));
+        actionApply_Current_Basis_to_New->setText(QApplication::translate("MainWindow", "Make Selected Basis Default", 0, QApplication::UnicodeUTF8));
+        actionSave_Basis_Collection->setText(QApplication::translate("MainWindow", "Save Basis Collection", 0, QApplication::UnicodeUTF8));
+        actionLoad_Basis_Collection->setText(QApplication::translate("MainWindow", "Load Basis Collection", 0, QApplication::UnicodeUTF8));
+        actionAdd_Selected_Basis_to_Collection->setText(QApplication::translate("MainWindow", "Add Selected Basis to Collection", 0, QApplication::UnicodeUTF8));
+        actionClear_Screen->setText(QApplication::translate("MainWindow", "Clear Screen", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "PUPs Curve Editor:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glCurvePane->setAccessibleName(QString());
@@ -266,6 +293,7 @@ public:
         menuApplication->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
         menuView->setTitle(QApplication::translate("MainWindow", "View", 0, QApplication::UnicodeUTF8));
+        menuBasis->setTitle(QApplication::translate("MainWindow", "Basis", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

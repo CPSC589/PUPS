@@ -615,6 +615,21 @@ void Renderer::loadSlot(){
     updateGL();
 }
 
+void Renderer::saveCollectionSlot(){
+    qDebug() << "Saving Collection";
+}
+
+void Renderer::loadCollectionSlot(){
+    qDebug() << "Loading Collection";
+}
+
+void Renderer::clearSlot(){
+    Pup newPupCurve = Pup();
+    pup_curve = newPupCurve;
+    updateGL();
+    updateOtherPanes();
+}
+
 
 //=================================================================
 // ENGINE HELPER FUNCTIONS
