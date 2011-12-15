@@ -15,7 +15,7 @@ public:
     Pup loadData(string fileName);
 
     void saveCollection(vector<Nurbs> BasisCollection, string fileName);
-    vector<Nurbs> loadCollection();
+    vector<Nurbs> loadCollection(string fileName);
 };
 
 #endif // FILEIO_H

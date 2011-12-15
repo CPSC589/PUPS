@@ -8,8 +8,15 @@ FileIO::FileIO()
 
 // Saves the current state of the program to a file
 void FileIO::saveData(Nurbs defaultBasis, double defaultWeight, double uInc, vector<ControlPoint> ControlPoints, vector<Nurbs> basisFunctions, string fileName){
+
     ofstream outFile;
-    outFile.open((fileName + ".pups").c_str());
+    if(std::string::npos != fileName.find(".pups")){
+        outFile.open(fileName.c_str());
+    }
+    else{
+        outFile.open((fileName + ".pups").c_str());
+    }
+
     if (outFile.is_open()) {
         outFile << "DefaultBasis\n"; // Saving the default Basis and default Weight information
         outFile << defaultWeight << ' ' << uInc << ' ' << defaultBasis.order << ' ' << defaultBasis.uniform << '\n';
@@ -155,7 +162,12 @@ Pup FileIO::loadData(string fileName){
 
 void FileIO::saveCollection(vector<Nurbs> BasisCollection, string fileName){
     ofstream outFile;
-    outFile.open((fileName + ".col").c_str());
+    if(std::string::npos != fileName.find(".pbc")){ // Pups Basis Collection
+        outFile.open(fileName.c_str());
+    }
+    else{
+        outFile.open((fileName + ".pbc").c_str());
+    }
     if (outFile.is_open()) {
         for(int i = 0; i < BasisCollection.size(); i++){
             Nurbs nurb = BasisCollection[i];
@@ -172,13 +184,55 @@ void FileIO::saveCollection(vector<Nurbs> BasisCollection, string fileName){
             }
         }
 
-
+        outFile << "EndOfFile";
         outFile.close();
     }
 }
 
-vector<Nurbs> FileIO::loadCollection(){
+vector<Nurbs> FileIO::loadCollection(string fileName){
     vector<Nurbs> BasisCollection;
+    ifstream infile;
+    infile.open((fileName).c_str());
+    string currentLine;
+    if(infile.is_open()){
+        getline(infile, currentLine);
+        while(currentLine.compare("EndOfFile") != 0){ // Until end of file, gather remaining basis info
+            string previous = currentLine;
+            getline(infile, currentLine);
+            vector<Point> NurbPoints = vector<Point>();
+            vector<double> nurbWeights = vector<double>();
+            int order;
+            bool uniform;
+            string parseLine;
+            while(currentLine.compare("NewBasis") != 0 && currentLine.compare("EndOfFile") != 0){ // Gather basis info
+                if(previous.compare("NewBasis") == 0){ // Get nurb info
+                   parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   order = atoi(parseLine.c_str());
+                   currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                   uniform = atoi(parseLine.c_str());
+                }
+                else{ // Get Nurb Control Points
+                    parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                    double currentWeight = atof(parseLine.c_str());
+                    currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                    float x = atof(parseLine.c_str());
+                    currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                    float y = atof(parseLine.c_str());
+                    currentLine = currentLine.substr(currentLine.find_first_of(' ')+1); parseLine = currentLine.substr(0, currentLine.find_first_of(' '));
+                    float z = atof(parseLine.c_str());
+                    nurbWeights.push_back(currentWeight);
+                    NurbPoints.push_back(Point(x, y, z));
+                }
+                previous = currentLine;
+                getline(infile, currentLine);
+            }
 
+            Nurbs currentNurb = Nurbs(NurbPoints, nurbWeights, order, uniform);
+            BasisCollection.push_back(currentNurb);
+
+        }
+
+        infile.close();
+    }
     return BasisCollection;
 }

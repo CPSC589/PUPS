@@ -581,23 +581,24 @@ void Renderer::saveSlot(){
     QString currentPath = dir->currentPath();
     QFileDialog* saveDialog = new QFileDialog(widget,"Save",currentPath,".pups");
     QString fileName = saveDialog->getSaveFileName();
-    vector<ControlPoint> CPs = vector<ControlPoint>();
-    vector<Point> inputControlPoints = pup_curve.control_points;
-    vector<double> weights = pup_curve.weights;
+    if(fileName.compare(QString("")) != 0){ // Prevents crash if user closes dialog without input
+        vector<ControlPoint> CPs = vector<ControlPoint>();
+        vector<Point> inputControlPoints = pup_curve.control_points;
+        vector<double> weights = pup_curve.weights;
 
-    for(int i = 0; i < inputControlPoints.size(); i++){
-        ControlPoint newCP = ControlPoint(inputControlPoints[i]);
-        newCP.changeWeight(weights[i]);
-        CPs.push_back(newCP);
+        for(int i = 0; i < inputControlPoints.size(); i++){
+            ControlPoint newCP = ControlPoint(inputControlPoints[i]);
+            newCP.changeWeight(weights[i]);
+            CPs.push_back(newCP);
+        }
+
+        Nurbs defaultBasis = pup_curve.default_basis;
+        double defaultWeight = pup_curve.default_weight;
+        double uInc = pup_curve.u_increment;
+        vector<Nurbs> basisFunctions = pup_curve.basis_functions;
+
+        outputIO.saveData(defaultBasis, defaultWeight, uInc, CPs, basisFunctions, fileName.toStdString());
     }
-
-    Nurbs defaultBasis = pup_curve.default_basis;
-    double defaultWeight = pup_curve.default_weight;
-    double uInc = pup_curve.u_increment;
-    vector<Nurbs> basisFunctions = pup_curve.basis_functions;
-
-    outputIO.saveData(defaultBasis, defaultWeight, uInc, CPs, basisFunctions, fileName.toStdString());
-
     //updateGL(); Don't really need this update.
 }
 
@@ -608,19 +609,41 @@ void Renderer::loadSlot(){
     QString currentPath = dir->currentPath();
     QFileDialog* loadDialog = new QFileDialog(widget,"Load",currentPath,".pups");
     QString fileName = loadDialog->getOpenFileName();
-    Pup pupCurve = inputIO.loadData(fileName.toStdString());
-    pup_curve = pupCurve;
-    //pup_curve.updateAll();
-    //pup_curve.updateCurve();
-    updateGL();
+    if(fileName.compare(QString("")) != 0){ // Prevents crash if user closes dialog without input
+        Pup pupCurve = inputIO.loadData(fileName.toStdString());
+        pup_curve = pupCurve;
+        updateGL();
+    }
 }
 
 void Renderer::saveCollectionSlot(){
-    qDebug() << "Saving Collection";
+    FileIO outputIO = FileIO();
+    QWidget* widget = new QWidget();
+    QDir* dir = new QDir();
+    QString currentPath = dir->currentPath();
+    QFileDialog* saveDialog = new QFileDialog(widget,"Save",currentPath,".col");
+    QString fileName = saveDialog->getSaveFileName();
+    if(fileName.compare(QString("")) != 0){ // Prevents crash if user closes dialog without input
+        outputIO.saveCollection(BasisCollection, fileName.toStdString());
+    }
 }
 
 void Renderer::loadCollectionSlot(){
-    qDebug() << "Loading Collection";
+    FileIO inputIO = FileIO();
+    QWidget* widget = new QWidget();
+    QDir* dir = new QDir();
+    QString currentPath = dir->currentPath();
+    QFileDialog* loadDialog = new QFileDialog(widget,"Load",currentPath,".col");
+    QString fileName = loadDialog->getOpenFileName();
+    if(fileName.compare(QString("")) != 0){ // Prevents crash if user closes dialog without input
+        BasisCollection = inputIO.loadCollection(fileName.toStdString());
+    }
+}
+
+void Renderer::addToCollectionSlot(){
+    BasisCollection.push_back(pup_curve.basis_functions[pup_curve.selected_point_index]);
+    updateGL();
+    updateOtherPanes();
 }
 
 void Renderer::clearSlot(){

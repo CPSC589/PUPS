@@ -44,6 +44,7 @@ public slots:
     void loadSlot();
     void saveCollectionSlot();
     void loadCollectionSlot();
+    void addToCollectionSlot();
     void fadeSlot(bool checked);
     void applyBasisSlot();
     void clearSlot();

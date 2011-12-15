@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Dec 12 16:23:53 2011
+** Created: Wed Dec 14 20:29:28 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -247,8 +247,6 @@ public:
         retranslateUi(MainWindow);
         QObject::connect(actionClose, SIGNAL(triggered()), MainWindow, SLOT(close()));
         QObject::connect(glParameterPane, SIGNAL(updateNext(int)), glCurvePane, SLOT(updateMe(int)));
-        QObject::connect(glCurvePane, SIGNAL(updateNext(int)), glProjectionPane, SLOT(updateMe(int)));
-        QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
         QObject::connect(actionLoad, SIGNAL(triggered()), glCurvePane, SLOT(loadSlot()));
         QObject::connect(actionSave, SIGNAL(triggered()), glCurvePane, SLOT(saveSlot()));
         QObject::connect(actionUndo, SIGNAL(triggered()), glCurvePane, SLOT(undo()));
@@ -258,13 +256,16 @@ public:
         QObject::connect(actionSave_Basis_Collection, SIGNAL(triggered()), glCurvePane, SLOT(saveCollectionSlot()));
         QObject::connect(actionLoad_Basis_Collection, SIGNAL(triggered()), glCurvePane, SLOT(loadCollectionSlot()));
         QObject::connect(actionClear_Screen, SIGNAL(triggered()), glCurvePane, SLOT(clearSlot()));
+        QObject::connect(actionAdd_Selected_Basis_to_Collection, SIGNAL(triggered()), glCurvePane, SLOT(addToCollectionSlot()));
+        QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
+        QObject::connect(glCurvePane, SIGNAL(updateNext(int)), glProjectionPane, SLOT(updateMe(int)));
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Partition of Unity Parametrics (PUPs): The Educational Tool - Andrew Legault, Kent Duncan, Scott Chorel", 0, QApplication::UnicodeUTF8));
         actionClose->setText(QApplication::translate("MainWindow", "Close", 0, QApplication::UnicodeUTF8));
         actionUndo->setText(QApplication::translate("MainWindow", "Undo", 0, QApplication::UnicodeUTF8));
         actionUndo->setShortcut(QApplication::translate("MainWindow", "Ctrl+Z", 0, QApplication::UnicodeUTF8));
