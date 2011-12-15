@@ -126,41 +126,74 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>PUPs Projection Display:</string>
-           </property>
-           <property name="indent">
-            <number>2</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="Renderer" name="glProjectionPane" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>200</width>
-             <height>200</height>
-            </size>
-           </property>
-           <property name="cursor">
-            <cursorShape>ArrowCursor</cursorShape>
-           </property>
-           <property name="mouseTracking">
+          <widget class="QTabWidget" name="tabWidget">
+           <property name="enabled">
             <bool>true</bool>
            </property>
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
            </property>
-           <property name="accessibleName">
-            <string/>
+           <property name="autoFillBackground">
+            <bool>false</bool>
            </property>
+           <property name="styleSheet">
+            <string notr="true">border: 0px</string>
+           </property>
+           <property name="tabPosition">
+            <enum>QTabWidget::North</enum>
+           </property>
+           <property name="tabShape">
+            <enum>QTabWidget::Rounded</enum>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <property name="documentMode">
+            <bool>false</bool>
+           </property>
+           <property name="tabsClosable">
+            <bool>false</bool>
+           </property>
+           <widget class="QWidget" name="tab_7">
+            <attribute name="title">
+             <string>Tab 1</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="Renderer" name="glProjectionPane" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>200</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>ArrowCursor</cursorShape>
+               </property>
+               <property name="mouseTracking">
+                <bool>true</bool>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::TabFocus</enum>
+               </property>
+               <property name="accessibleName">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="tab_8">
+            <attribute name="title">
+             <string>Tab 2</string>
+            </attribute>
+           </widget>
           </widget>
          </item>
         </layout>
@@ -589,34 +622,34 @@
    </hints>
   </connection>
   <connection>
-   <sender>glProjectionPane</sender>
-   <signal>updateNext(int)</signal>
-   <receiver>glParameterPane</receiver>
-   <slot>updateMe(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>694</x>
-     <y>202</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>465</x>
-     <y>460</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>glCurvePane</sender>
    <signal>updateNext(int)</signal>
    <receiver>glProjectionPane</receiver>
    <slot>updateMe(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>232</x>
-     <y>196</y>
+     <x>222</x>
+     <y>208</y>
     </hint>
     <hint type="destinationlabel">
-     <x>698</x>
-     <y>158</y>
+     <x>678</x>
+     <y>210</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>glProjectionPane</sender>
+   <signal>updateNext(int)</signal>
+   <receiver>glParameterPane</receiver>
+   <slot>updateMe(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>678</x>
+     <y>210</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>465</x>
+     <y>455</y>
     </hint>
    </hints>
   </connection>

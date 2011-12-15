@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed Dec 14 20:29:28 2011
+** Created: Thu Dec 15 13:17:04 2011
 **      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -22,6 +22,7 @@
 #include <QtGui/QMenuBar>
 #include <QtGui/QSplitter>
 #include <QtGui/QStatusBar>
+#include <QtGui/QTabWidget>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 #include "renderer.h"
@@ -52,8 +53,11 @@ public:
     Renderer *glCurvePane;
     QFrame *frame2;
     QVBoxLayout *verticalLayout;
-    QLabel *label_2;
+    QTabWidget *tabWidget;
+    QWidget *tab_7;
+    QVBoxLayout *verticalLayout_6;
     Renderer *glProjectionPane;
+    QWidget *tab_8;
     QFrame *frame1;
     QVBoxLayout *verticalLayout_3;
     QLabel *label_3;
@@ -149,22 +153,39 @@ public:
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 2, 0, 0);
-        label_2 = new QLabel(frame2);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setIndent(2);
-
-        verticalLayout->addWidget(label_2);
-
-        glProjectionPane = new Renderer(frame2);
+        tabWidget = new QTabWidget(frame2);
+        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
+        tabWidget->setEnabled(true);
+        tabWidget->setLayoutDirection(Qt::LeftToRight);
+        tabWidget->setAutoFillBackground(false);
+        tabWidget->setStyleSheet(QString::fromUtf8("border: 0px"));
+        tabWidget->setTabPosition(QTabWidget::North);
+        tabWidget->setTabShape(QTabWidget::Rounded);
+        tabWidget->setDocumentMode(false);
+        tabWidget->setTabsClosable(false);
+        tab_7 = new QWidget();
+        tab_7->setObjectName(QString::fromUtf8("tab_7"));
+        verticalLayout_6 = new QVBoxLayout(tab_7);
+        verticalLayout_6->setSpacing(6);
+        verticalLayout_6->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        glProjectionPane = new Renderer(tab_7);
         glProjectionPane->setObjectName(QString::fromUtf8("glProjectionPane"));
         sizePolicy.setHeightForWidth(glProjectionPane->sizePolicy().hasHeightForWidth());
         glProjectionPane->setSizePolicy(sizePolicy);
         glProjectionPane->setMinimumSize(QSize(200, 200));
         glProjectionPane->setCursor(QCursor(Qt::ArrowCursor));
         glProjectionPane->setMouseTracking(true);
-        glProjectionPane->setFocusPolicy(Qt::StrongFocus);
+        glProjectionPane->setFocusPolicy(Qt::TabFocus);
 
-        verticalLayout->addWidget(glProjectionPane);
+        verticalLayout_6->addWidget(glProjectionPane);
+
+        tabWidget->addTab(tab_7, QString());
+        tab_8 = new QWidget();
+        tab_8->setObjectName(QString::fromUtf8("tab_8"));
+        tabWidget->addTab(tab_8, QString());
+
+        verticalLayout->addWidget(tabWidget);
 
         splitter->addWidget(frame2);
         splitter_2->addWidget(splitter);
@@ -257,8 +278,11 @@ public:
         QObject::connect(actionLoad_Basis_Collection, SIGNAL(triggered()), glCurvePane, SLOT(loadCollectionSlot()));
         QObject::connect(actionClear_Screen, SIGNAL(triggered()), glCurvePane, SLOT(clearSlot()));
         QObject::connect(actionAdd_Selected_Basis_to_Collection, SIGNAL(triggered()), glCurvePane, SLOT(addToCollectionSlot()));
-        QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
         QObject::connect(glCurvePane, SIGNAL(updateNext(int)), glProjectionPane, SLOT(updateMe(int)));
+        QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
+
+        tabWidget->setCurrentIndex(0);
+
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -283,10 +307,11 @@ public:
 #ifndef QT_NO_ACCESSIBILITY
         glCurvePane->setAccessibleName(QString());
 #endif // QT_NO_ACCESSIBILITY
-        label_2->setText(QApplication::translate("MainWindow", "PUPs Projection Display:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glProjectionPane->setAccessibleName(QString());
 #endif // QT_NO_ACCESSIBILITY
+        tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("MainWindow", "Tab 1", 0, QApplication::UnicodeUTF8));
+        tabWidget->setTabText(tabWidget->indexOf(tab_8), QApplication::translate("MainWindow", "Tab 2", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("MainWindow", "Parameter Space:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glParameterPane->setAccessibleName(QString());
