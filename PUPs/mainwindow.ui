@@ -126,39 +126,15 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QTabWidget" name="tabWidget">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="autoFillBackground">
-            <bool>false</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">border: 0px</string>
-           </property>
-           <property name="tabPosition">
-            <enum>QTabWidget::North</enum>
-           </property>
-           <property name="tabShape">
-            <enum>QTabWidget::Rounded</enum>
-           </property>
+          <widget class="QTabWidget" name="tabWidget_2">
            <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <property name="documentMode">
-            <bool>false</bool>
-           </property>
-           <property name="tabsClosable">
-            <bool>false</bool>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="tab_7">
             <attribute name="title">
-             <string>Tab 1</string>
+             <string>Projection Display</string>
             </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_6">
+            <layout class="QVBoxLayout" name="verticalLayout_8">
              <item>
               <widget class="Renderer" name="glProjectionPane" native="true">
                <property name="sizePolicy">
@@ -188,11 +164,91 @@
               </widget>
              </item>
             </layout>
+            <zorder>AddToCollectionButton</zorder>
+            <zorder></zorder>
+            <zorder>glProjectionPane</zorder>
            </widget>
            <widget class="QWidget" name="tab_8">
             <attribute name="title">
-             <string>Tab 2</string>
+             <string>Basis Collection</string>
             </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <widget class="Renderer" name="glBasisCollection" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>200</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>ArrowCursor</cursorShape>
+               </property>
+               <property name="mouseTracking">
+                <bool>true</bool>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::StrongFocus</enum>
+               </property>
+               <property name="accessibleName">
+                <string/>
+               </property>
+               <zorder>PreviousButton</zorder>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="ButtonLayout">
+               <item>
+                <widget class="QPushButton" name="PreviousButton">
+                 <property name="text">
+                  <string>Previous</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="ApplyButton">
+                 <property name="text">
+                  <string>Apply</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="ApplyAllButton">
+                 <property name="text">
+                  <string>Apply to All</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="MakeDefaultButton">
+                 <property name="text">
+                  <string>Make Default Basis</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="NextButton">
+                 <property name="text">
+                  <string>Next</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QPushButton" name="AddToCollectionButton">
+               <property name="text">
+                <string>Add Selected Basis Function to Collection</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </widget>
          </item>
@@ -324,17 +380,9 @@
     <addaction name="actionFade"/>
     <addaction name="actionNormalized_Basis_Functions"/>
    </widget>
-   <widget class="QMenu" name="menuBasis">
-    <property name="title">
-     <string>Basis</string>
-    </property>
-    <addaction name="actionAdd_Selected_Basis_to_Collection"/>
-    <addaction name="actionApply_Current_Basis_to_New"/>
-   </widget>
    <addaction name="menuApplication"/>
    <addaction name="menuEdit"/>
    <addaction name="menuView"/>
-   <addaction name="menuBasis"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionClose">
@@ -428,12 +476,16 @@
     <slot>saveSlot()</slot>
     <slot>loadSlot()</slot>
     <slot>fadeSlot(bool)</slot>
-    <slot>applyBasisSlot()</slot>
     <slot>saveCollectionSlot()</slot>
     <slot>loadCollectionSlot()</slot>
     <slot>clearSlot()</slot>
     <slot>addToCollectionSlot()</slot>
     <slot>normalizedSlot(bool)</slot>
+    <slot>applyToAllSlot</slot>
+    <slot>makeDefaultSlot()</slot>
+    <slot>applySlot()</slot>
+    <slot>nextBasisSlot()</slot>
+    <slot>previousBasisSlot()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -555,7 +607,7 @@
    <sender>actionApply_Current_Basis_to_New</sender>
    <signal>triggered()</signal>
    <receiver>glCurvePane</receiver>
-   <slot>applyBasisSlot()</slot>
+   <slot>makeDefaultSlot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -632,6 +684,118 @@
    </hints>
   </connection>
   <connection>
+   <sender>ApplyButton</sender>
+   <signal>clicked()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>applySlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>546</x>
+     <y>319</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AddToCollectionButton</sender>
+   <signal>clicked()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>addToCollectionSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>657</x>
+     <y>350</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PreviousButton</sender>
+   <signal>clicked()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>previousBasisSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>446</x>
+     <y>319</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>NextButton</sender>
+   <signal>clicked()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>nextBasisSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>869</x>
+     <y>319</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MakeDefaultButton</sender>
+   <signal>clicked()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>makeDefaultSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>757</x>
+     <y>319</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ApplyAllButton</sender>
+   <signal>clicked()</signal>
+   <receiver>glCurvePane</receiver>
+   <slot>applyToAllSlot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>646</x>
+     <y>319</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>glBasisCollection</sender>
+   <signal>updateNext(int)</signal>
+   <receiver>glParameterPane</receiver>
+   <slot>updateMe(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>678</x>
+     <y>210</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>465</x>
+     <y>455</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>glCurvePane</sender>
    <signal>updateNext(int)</signal>
    <receiver>glProjectionPane</receiver>
@@ -650,7 +814,7 @@
   <connection>
    <sender>glProjectionPane</sender>
    <signal>updateNext(int)</signal>
-   <receiver>glParameterPane</receiver>
+   <receiver>glBasisCollection</receiver>
    <slot>updateMe(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -658,8 +822,8 @@
      <y>210</y>
     </hint>
     <hint type="destinationlabel">
-     <x>465</x>
-     <y>455</y>
+     <x>678</x>
+     <y>210</y>
     </hint>
    </hints>
   </connection>

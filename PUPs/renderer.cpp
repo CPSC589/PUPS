@@ -9,6 +9,7 @@ using namespace std;
 #define CURVE_PANE 0
 #define PARAMETER_PANE 1
 #define PROJECTION_PANE 2
+#define COLLECTION_PANE 3
 
 //initialised static variables
 Pup Renderer::pup_curve = Pup();
@@ -18,6 +19,11 @@ bool Renderer::mouseDown = false;
 Point Renderer::lastMousePress = Point();
 Point Renderer::lastMousePosition = Point();
 bool Renderer::show_normalized_basis = false;
+int Renderer::stateIndex = -1;
+bool Renderer::drawFadeSelected = false;
+int Renderer::indexOfBasisCollection = -1;
+vector<Nurbs> Renderer::BasisCollection = vector<Nurbs>();
+vector<Pup> Renderer::states = vector<Pup>();
 
 //uninitialised static variables shared across all renderers
 double Renderer::frustum_data[6];
@@ -46,19 +52,20 @@ Renderer::~Renderer()
 void Renderer::paintGL()
 {
     //dont start rendering until all the pane types are determined (we don't want to be comparing strings each time)
-    if (panes_loaded < 3)
+    if (panes_loaded < 4)
     {
         if (this_pane_type == -1)
         {
             if (objectName() == "glCurvePane") this_pane_type = CURVE_PANE;
             else if (objectName() == "glParameterPane") this_pane_type = PARAMETER_PANE;
             else if (objectName() == "glProjectionPane") this_pane_type = PROJECTION_PANE;
+            else if (objectName() == "glBasisCollection") this_pane_type = COLLECTION_PANE;
             else return;
             //if we get to this line then the pane type was just determined
             panes_loaded++;
         }
 
-        if (panes_loaded == 3){
+        if (panes_loaded == 4){
             //if we get to this line then the last pane type was just determined
             updateOtherPanes();
         } else {
@@ -86,6 +93,11 @@ void Renderer::paintGL()
         draw2DGrid(1,Point(0.95,0.95,0.95));
     }
     else if (this_pane_type == PROJECTION_PANE) drawProjectionPane();
+    else if (this_pane_type == COLLECTION_PANE) {
+        if(BasisCollection.size() > 0){
+            drawCollectionPane();
+        }
+    }
 
     glFlush();
 }
@@ -94,7 +106,6 @@ void Renderer::initializeGL()
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
     glEnable(GL_DEPTH_TEST);    
     glClearColor(1, 1, 1, 1);
-    stateIndex = -1; drawFadeSelected = false;
 }
 void Renderer::resizeGL( int w, int h )
 {
@@ -121,6 +132,44 @@ void Renderer::resizeGL( int w, int h )
 
     glMatrixMode(GL_MODELVIEW);
     updateOtherPanes();
+}
+
+void Renderer::drawCollectionPane(){
+    //setup the orthographic viewing matrix for parameter space
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    gluOrtho2D(0.0, 1.0, -1.0, 2.0);
+    glMatrixMode( GL_MODELVIEW );
+
+    double cur_u = 0;
+
+    //non normalised curve
+    glLineWidth(2);
+    glColor3f(0,1,0);
+    glBegin(GL_LINE_STRIP);
+    vector<Point>* curvePoints = &BasisCollection[indexOfBasisCollection].curve_points;
+    double leftMostX = (curvePoints->at(0)).x;
+    double rightMostX = (curvePoints->at(curvePoints->size()-1).x)- leftMostX;
+    for(int i = 0; i < curvePoints->size(); i++){
+        glVertex2d(((curvePoints->at(i)).x-leftMostX)/rightMostX, (curvePoints->at(i)).y);
+    }
+
+    glEnd();
+
+    //control points
+    glPointSize(6);
+    glColor3f(0.8,0.8,0.8);
+    glBegin(GL_POINTS);
+    //loop through the influences
+    vector<Point>* controlPoints = &BasisCollection[indexOfBasisCollection].control_points;
+    leftMostX = (controlPoints->at(0)).x;
+    rightMostX = (controlPoints->at(controlPoints->size()-1).x) - leftMostX;
+    //rightMostX = (controlPoints->at())
+    for (int j = 0; j < controlPoints->size(); j++)
+    {
+        glVertex2d(((controlPoints->at(j)).x - leftMostX)/rightMostX, (controlPoints->at(j)).y - leftMostX);
+    }
+    glEnd();
 }
 
 void Renderer::drawPupPane()
@@ -567,12 +616,47 @@ void Renderer::fadeSlot(bool checked){
     updateOtherPanes();
 }
 
+void Renderer::nextBasisSlot(){
+    if(indexOfBasisCollection < BasisCollection.size()-1){
+        indexOfBasisCollection += 1;
+        updateGL();
+        updateOtherPanes();
+    }
 
-void Renderer::applyBasisSlot(){
-    int indexOfBasis = pup_curve.selected_point_index;
-    pup_curve.default_basis = pup_curve.basis_functions[indexOfBasis];
+}
+
+void Renderer::previousBasisSlot(){
+    if(indexOfBasisCollection > 0){
+        indexOfBasisCollection -= 1;
+        updateGL();
+        updateOtherPanes();
+    }
+}
+
+void Renderer::makeDefaultSlot(){
+    if(indexOfBasisCollection >= 0){
+        pup_curve.default_basis = BasisCollection[indexOfBasisCollection];
+        updateGL();
+        updateOtherPanes();
+    }
+}
+
+void Renderer::applySlot(){
+    if(indexOfBasisCollection >= 0 && pup_curve.selected_point_index != -1){
+        pup_curve.basis_functions[pup_curve.selected_point_index] = BasisCollection[indexOfBasisCollection];
+    }
     updateGL();
     updateOtherPanes();
+}
+
+void Renderer::applyToAllSlot(){
+    if(indexOfBasisCollection >= 0){
+        for(int i = 0; i < pup_curve.control_points.size(); i++){
+            pup_curve.basis_functions[i] = BasisCollection[indexOfBasisCollection];
+        }
+        updateGL();
+        updateOtherPanes();
+    }
 }
 
 
@@ -669,14 +753,20 @@ void Renderer::loadCollectionSlot(){
     QFileDialog* loadDialog = new QFileDialog(widget,"Load",currentPath,".col");
     QString fileName = loadDialog->getOpenFileName();
     if(fileName.compare(QString("")) != 0){ // Prevents crash if user closes dialog without input
+        indexOfBasisCollection = 0;
         BasisCollection = inputIO.loadCollection(fileName.toStdString());
     }
+    updateGL();
+    updateOtherPanes();
 }
 
 void Renderer::addToCollectionSlot(){
-    BasisCollection.push_back(pup_curve.basis_functions[pup_curve.selected_point_index]);
-    updateGL();
-    updateOtherPanes();
+    if(pup_curve.basis_functions.size() > 0 && pup_curve.selected_point_index != -1){
+        BasisCollection.push_back(pup_curve.basis_functions[pup_curve.selected_point_index]);
+        indexOfBasisCollection += 1;
+        updateGL();
+        updateOtherPanes();
+    }
 }
 
 void Renderer::clearSlot(){

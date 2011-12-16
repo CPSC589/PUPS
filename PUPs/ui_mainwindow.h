@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Thu Dec 15 19:51:39 2011
+** Created: Thu Dec 15 19:02:53 2011
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -15,11 +15,13 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QFrame>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
+#include <QtGui/QPushButton>
 #include <QtGui/QSplitter>
 #include <QtGui/QStatusBar>
 #include <QtGui/QTabWidget>
@@ -54,11 +56,20 @@ public:
     Renderer *glCurvePane;
     QFrame *frame2;
     QVBoxLayout *verticalLayout;
-    QTabWidget *tabWidget;
+    QTabWidget *tabWidget_2;
     QWidget *tab_7;
-    QVBoxLayout *verticalLayout_6;
+    QVBoxLayout *verticalLayout_8;
     Renderer *glProjectionPane;
     QWidget *tab_8;
+    QVBoxLayout *verticalLayout_9;
+    Renderer *glBasisCollection;
+    QHBoxLayout *ButtonLayout;
+    QPushButton *PreviousButton;
+    QPushButton *ApplyButton;
+    QPushButton *ApplyAllButton;
+    QPushButton *MakeDefaultButton;
+    QPushButton *NextButton;
+    QPushButton *AddToCollectionButton;
     QFrame *frame1;
     QVBoxLayout *verticalLayout_3;
     QLabel *label_3;
@@ -67,7 +78,6 @@ public:
     QMenu *menuApplication;
     QMenu *menuEdit;
     QMenu *menuView;
-    QMenu *menuBasis;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -157,22 +167,14 @@ public:
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 2, 0, 0);
-        tabWidget = new QTabWidget(frame2);
-        tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setEnabled(true);
-        tabWidget->setLayoutDirection(Qt::LeftToRight);
-        tabWidget->setAutoFillBackground(false);
-        tabWidget->setStyleSheet(QString::fromUtf8("border: 0px"));
-        tabWidget->setTabPosition(QTabWidget::North);
-        tabWidget->setTabShape(QTabWidget::Rounded);
-        tabWidget->setDocumentMode(false);
-        tabWidget->setTabsClosable(false);
+        tabWidget_2 = new QTabWidget(frame2);
+        tabWidget_2->setObjectName(QString::fromUtf8("tabWidget_2"));
         tab_7 = new QWidget();
         tab_7->setObjectName(QString::fromUtf8("tab_7"));
-        verticalLayout_6 = new QVBoxLayout(tab_7);
-        verticalLayout_6->setSpacing(6);
-        verticalLayout_6->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        verticalLayout_8 = new QVBoxLayout(tab_7);
+        verticalLayout_8->setSpacing(6);
+        verticalLayout_8->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
         glProjectionPane = new Renderer(tab_7);
         glProjectionPane->setObjectName(QString::fromUtf8("glProjectionPane"));
         sizePolicy.setHeightForWidth(glProjectionPane->sizePolicy().hasHeightForWidth());
@@ -182,14 +184,66 @@ public:
         glProjectionPane->setMouseTracking(true);
         glProjectionPane->setFocusPolicy(Qt::TabFocus);
 
-        verticalLayout_6->addWidget(glProjectionPane);
+        verticalLayout_8->addWidget(glProjectionPane);
 
-        tabWidget->addTab(tab_7, QString());
+        tabWidget_2->addTab(tab_7, QString());
+        glProjectionPane->raise();
         tab_8 = new QWidget();
         tab_8->setObjectName(QString::fromUtf8("tab_8"));
-        tabWidget->addTab(tab_8, QString());
+        verticalLayout_9 = new QVBoxLayout(tab_8);
+        verticalLayout_9->setSpacing(6);
+        verticalLayout_9->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_9->setObjectName(QString::fromUtf8("verticalLayout_9"));
+        glBasisCollection = new Renderer(tab_8);
+        glBasisCollection->setObjectName(QString::fromUtf8("glBasisCollection"));
+        sizePolicy.setHeightForWidth(glBasisCollection->sizePolicy().hasHeightForWidth());
+        glBasisCollection->setSizePolicy(sizePolicy);
+        glBasisCollection->setMinimumSize(QSize(200, 200));
+        glBasisCollection->setCursor(QCursor(Qt::ArrowCursor));
+        glBasisCollection->setMouseTracking(true);
+        glBasisCollection->setFocusPolicy(Qt::StrongFocus);
 
-        verticalLayout->addWidget(tabWidget);
+        verticalLayout_9->addWidget(glBasisCollection);
+
+        ButtonLayout = new QHBoxLayout();
+        ButtonLayout->setSpacing(6);
+        ButtonLayout->setObjectName(QString::fromUtf8("ButtonLayout"));
+        PreviousButton = new QPushButton(tab_8);
+        PreviousButton->setObjectName(QString::fromUtf8("PreviousButton"));
+
+        ButtonLayout->addWidget(PreviousButton);
+
+        ApplyButton = new QPushButton(tab_8);
+        ApplyButton->setObjectName(QString::fromUtf8("ApplyButton"));
+
+        ButtonLayout->addWidget(ApplyButton);
+
+        ApplyAllButton = new QPushButton(tab_8);
+        ApplyAllButton->setObjectName(QString::fromUtf8("ApplyAllButton"));
+
+        ButtonLayout->addWidget(ApplyAllButton);
+
+        MakeDefaultButton = new QPushButton(tab_8);
+        MakeDefaultButton->setObjectName(QString::fromUtf8("MakeDefaultButton"));
+
+        ButtonLayout->addWidget(MakeDefaultButton);
+
+        NextButton = new QPushButton(tab_8);
+        NextButton->setObjectName(QString::fromUtf8("NextButton"));
+
+        ButtonLayout->addWidget(NextButton);
+
+
+        verticalLayout_9->addLayout(ButtonLayout);
+
+        AddToCollectionButton = new QPushButton(tab_8);
+        AddToCollectionButton->setObjectName(QString::fromUtf8("AddToCollectionButton"));
+
+        verticalLayout_9->addWidget(AddToCollectionButton);
+
+        tabWidget_2->addTab(tab_8, QString());
+
+        verticalLayout->addWidget(tabWidget_2);
 
         splitter->addWidget(frame2);
         splitter_2->addWidget(splitter);
@@ -246,8 +300,6 @@ public:
         menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
         menuView = new QMenu(menuBar);
         menuView->setObjectName(QString::fromUtf8("menuView"));
-        menuBasis = new QMenu(menuBar);
-        menuBasis->setObjectName(QString::fromUtf8("menuBasis"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -256,7 +308,6 @@ public:
         menuBar->addAction(menuApplication->menuAction());
         menuBar->addAction(menuEdit->menuAction());
         menuBar->addAction(menuView->menuAction());
-        menuBar->addAction(menuBasis->menuAction());
         menuApplication->addAction(actionSave);
         menuApplication->addAction(actionLoad);
         menuApplication->addAction(actionSave_Basis_Collection);
@@ -267,8 +318,6 @@ public:
         menuEdit->addAction(actionClear_Screen);
         menuView->addAction(actionFade);
         menuView->addAction(actionNormalized_Basis_Functions);
-        menuBasis->addAction(actionAdd_Selected_Basis_to_Collection);
-        menuBasis->addAction(actionApply_Current_Basis_to_New);
 
         retranslateUi(MainWindow);
         QObject::connect(actionClose, SIGNAL(triggered()), MainWindow, SLOT(close()));
@@ -278,16 +327,23 @@ public:
         QObject::connect(actionUndo, SIGNAL(triggered()), glCurvePane, SLOT(undo()));
         QObject::connect(actionRedo, SIGNAL(triggered()), glCurvePane, SLOT(redo()));
         QObject::connect(actionFade, SIGNAL(toggled(bool)), glCurvePane, SLOT(fadeSlot(bool)));
-        QObject::connect(actionApply_Current_Basis_to_New, SIGNAL(triggered()), glCurvePane, SLOT(applyBasisSlot()));
+        QObject::connect(actionApply_Current_Basis_to_New, SIGNAL(triggered()), glCurvePane, SLOT(makeDefaultSlot()));
         QObject::connect(actionSave_Basis_Collection, SIGNAL(triggered()), glCurvePane, SLOT(saveCollectionSlot()));
         QObject::connect(actionLoad_Basis_Collection, SIGNAL(triggered()), glCurvePane, SLOT(loadCollectionSlot()));
         QObject::connect(actionClear_Screen, SIGNAL(triggered()), glCurvePane, SLOT(clearSlot()));
         QObject::connect(actionAdd_Selected_Basis_to_Collection, SIGNAL(triggered()), glCurvePane, SLOT(addToCollectionSlot()));
+        QObject::connect(ApplyButton, SIGNAL(clicked()), glCurvePane, SLOT(applySlot()));
+        QObject::connect(AddToCollectionButton, SIGNAL(clicked()), glCurvePane, SLOT(addToCollectionSlot()));
+        QObject::connect(PreviousButton, SIGNAL(clicked()), glCurvePane, SLOT(previousBasisSlot()));
+        QObject::connect(NextButton, SIGNAL(clicked()), glCurvePane, SLOT(nextBasisSlot()));
+        QObject::connect(MakeDefaultButton, SIGNAL(clicked()), glCurvePane, SLOT(makeDefaultSlot()));
+        QObject::connect(ApplyAllButton, SIGNAL(clicked()), glCurvePane, SLOT(applyToAllSlot()));
+        QObject::connect(glBasisCollection, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
         QObject::connect(glCurvePane, SIGNAL(updateNext(int)), glProjectionPane, SLOT(updateMe(int)));
-        QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
+        QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glBasisCollection, SLOT(updateMe(int)));
         QObject::connect(actionNormalized_Basis_Functions, SIGNAL(triggered(bool)), glParameterPane, SLOT(normalizedSlot(bool)));
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget_2->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -317,8 +373,17 @@ public:
 #ifndef QT_NO_ACCESSIBILITY
         glProjectionPane->setAccessibleName(QString());
 #endif // QT_NO_ACCESSIBILITY
-        tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("MainWindow", "Tab 1", 0, QApplication::UnicodeUTF8));
-        tabWidget->setTabText(tabWidget->indexOf(tab_8), QApplication::translate("MainWindow", "Tab 2", 0, QApplication::UnicodeUTF8));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_7), QApplication::translate("MainWindow", "Projection Display", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_ACCESSIBILITY
+        glBasisCollection->setAccessibleName(QString());
+#endif // QT_NO_ACCESSIBILITY
+        PreviousButton->setText(QApplication::translate("MainWindow", "Previous", 0, QApplication::UnicodeUTF8));
+        ApplyButton->setText(QApplication::translate("MainWindow", "Apply", 0, QApplication::UnicodeUTF8));
+        ApplyAllButton->setText(QApplication::translate("MainWindow", "Apply to All", 0, QApplication::UnicodeUTF8));
+        MakeDefaultButton->setText(QApplication::translate("MainWindow", "Make Default Basis", 0, QApplication::UnicodeUTF8));
+        NextButton->setText(QApplication::translate("MainWindow", "Next", 0, QApplication::UnicodeUTF8));
+        AddToCollectionButton->setText(QApplication::translate("MainWindow", "Add Selected Basis Function to Collection", 0, QApplication::UnicodeUTF8));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_8), QApplication::translate("MainWindow", "Basis Collection", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("MainWindow", "Parameter Space:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glParameterPane->setAccessibleName(QString());
@@ -326,7 +391,6 @@ public:
         menuApplication->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
         menuView->setTitle(QApplication::translate("MainWindow", "View", 0, QApplication::UnicodeUTF8));
-        menuBasis->setTitle(QApplication::translate("MainWindow", "Basis", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
