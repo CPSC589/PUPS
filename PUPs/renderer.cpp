@@ -610,7 +610,9 @@ void Renderer::makeDefaultSlot(){
 
 void Renderer::applySlot(){
     if(indexOfBasisCollection >= 0 && pup_curve.selected_point_index != -1){
-        pup_curve.basis_functions[pup_curve.selected_point_index] = BasisCollection[indexOfBasisCollection];
+        Nurbs original = pup_curve.basis_functions[pup_curve.selected_point_index];
+        Nurbs basis = BasisCollection[indexOfBasisCollection];
+        //pup_curve.basis_functions[pup_curve.selected_point_index] =
     }
     updateGL();
     updateOtherPanes();
