@@ -352,7 +352,7 @@
      <x>0</x>
      <y>0</y>
      <width>931</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuApplication">
@@ -378,6 +378,7 @@
      <string>View</string>
     </property>
     <addaction name="actionFade"/>
+    <addaction name="actionNormalized_Basis_Functions"/>
    </widget>
    <addaction name="menuApplication"/>
    <addaction name="menuEdit"/>
@@ -451,6 +452,14 @@
     <string>Clear Screen</string>
    </property>
   </action>
+  <action name="actionNormalized_Basis_Functions">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Normalized Basis Functions</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -471,7 +480,8 @@
     <slot>loadCollectionSlot()</slot>
     <slot>clearSlot()</slot>
     <slot>addToCollectionSlot()</slot>
-    <slot>applyToAllSlot()</slot>
+    <slot>normalizedSlot(bool)</slot>
+    <slot>applyToAllSlot</slot>
     <slot>makeDefaultSlot()</slot>
     <slot>applySlot()</slot>
     <slot>nextBasisSlot()</slot>
@@ -814,6 +824,22 @@
     <hint type="destinationlabel">
      <x>678</x>
      <y>210</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNormalized_Basis_Functions</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>glParameterPane</receiver>
+   <slot>normalizedSlot(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>465</x>
+     <y>458</y>
     </hint>
    </hints>
   </connection>

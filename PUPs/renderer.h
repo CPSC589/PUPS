@@ -49,7 +49,7 @@ public slots:
     void makeDefaultSlot();
     void applyToAllSlot();
     void clearSlot();
-    void nextBasisSlot();
+    void normalizedSlot(bool b);
     void previousBasisSlot();
     void applySlot();
 
@@ -94,6 +94,9 @@ private:
         static int stateIndex;
         void updateStates();
         static bool drawFadeSelected;
+
+        //for determining whether to show the normalised basis functions
+        static bool show_normalized_basis;
 
         //Basis Collections
         static vector<Nurbs> BasisCollection;

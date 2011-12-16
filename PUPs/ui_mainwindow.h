@@ -2,7 +2,7 @@
 ** Form generated from reading UI file 'mainwindow.ui'
 **
 ** Created: Fri Dec 16 13:42:51 2011
-**      by: Qt User Interface Compiler version 4.7.0
+**      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -45,6 +45,7 @@ public:
     QAction *actionLoad_Basis_Collection;
     QAction *actionAdd_Selected_Basis_to_Collection;
     QAction *actionClear_Screen;
+    QAction *actionNormalized_Basis_Functions;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QSplitter *splitter_2;
@@ -109,6 +110,9 @@ public:
         actionAdd_Selected_Basis_to_Collection->setObjectName(QString::fromUtf8("actionAdd_Selected_Basis_to_Collection"));
         actionClear_Screen = new QAction(MainWindow);
         actionClear_Screen->setObjectName(QString::fromUtf8("actionClear_Screen"));
+        actionNormalized_Basis_Functions = new QAction(MainWindow);
+        actionNormalized_Basis_Functions->setObjectName(QString::fromUtf8("actionNormalized_Basis_Functions"));
+        actionNormalized_Basis_Functions->setCheckable(true);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout_4 = new QVBoxLayout(centralWidget);
@@ -289,7 +293,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 931, 26));
+        menuBar->setGeometry(QRect(0, 0, 931, 21));
         menuApplication = new QMenu(menuBar);
         menuApplication->setObjectName(QString::fromUtf8("menuApplication"));
         menuEdit = new QMenu(menuBar);
@@ -313,6 +317,7 @@ public:
         menuEdit->addAction(actionRedo);
         menuEdit->addAction(actionClear_Screen);
         menuView->addAction(actionFade);
+        menuView->addAction(actionNormalized_Basis_Functions);
 
         retranslateUi(MainWindow);
         QObject::connect(actionClose, SIGNAL(triggered()), MainWindow, SLOT(close()));
@@ -336,6 +341,7 @@ public:
         QObject::connect(glBasisCollection, SIGNAL(updateNext(int)), glParameterPane, SLOT(updateMe(int)));
         QObject::connect(glCurvePane, SIGNAL(updateNext(int)), glProjectionPane, SLOT(updateMe(int)));
         QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glBasisCollection, SLOT(updateMe(int)));
+        QObject::connect(actionNormalized_Basis_Functions, SIGNAL(triggered(bool)), glParameterPane, SLOT(normalizedSlot(bool)));
 
         tabWidget_2->setCurrentIndex(0);
 
@@ -359,6 +365,7 @@ public:
         actionLoad_Basis_Collection->setText(QApplication::translate("MainWindow", "Load Basis Collection", 0, QApplication::UnicodeUTF8));
         actionAdd_Selected_Basis_to_Collection->setText(QApplication::translate("MainWindow", "Add Selected Basis to Collection", 0, QApplication::UnicodeUTF8));
         actionClear_Screen->setText(QApplication::translate("MainWindow", "Clear Screen", 0, QApplication::UnicodeUTF8));
+        actionNormalized_Basis_Functions->setText(QApplication::translate("MainWindow", "Normalized Basis Functions", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "PUPs Curve Editor:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glCurvePane->setAccessibleName(QString());
