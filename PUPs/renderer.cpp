@@ -17,8 +17,7 @@ int Renderer::currently_focused_pane = -1;
 bool Renderer::mouseDown = false;
 Point Renderer::lastMousePress = Point();
 Point Renderer::lastMousePosition = Point();
-//double Renderer::parameter_pane_largest_y = 1;
-//double Renderer::parameter_pane_smallest_y = 0;
+bool Renderer::show_normalized_basis = false;
 
 //uninitialised static variables shared across all renderers
 double Renderer::frustum_data[6];
@@ -76,16 +75,17 @@ void Renderer::paintGL()
     //call the appropriate drawing function based on the current pane type
     if (this_pane_type == CURVE_PANE){
         drawPupPane();
+        draw2DGrid(1,Point(0.95,0.95,0.95));
+
         if (drawFadeSelected && (stateIndex > 0)){
             drawFade();
         }
     }
-    else if (this_pane_type == PARAMETER_PANE) drawParameterPane();
+    else if (this_pane_type == PARAMETER_PANE) {
+        drawParameterPane();
+        draw2DGrid(1,Point(0.95,0.95,0.95));
+    }
     else if (this_pane_type == PROJECTION_PANE) drawProjectionPane();
-
-
-
-    draw2DGrid(1,Point(0.9,0.9,0.9));
 
     glFlush();
 }
@@ -181,23 +181,6 @@ void Renderer::drawPupPane()
 }
 void Renderer::drawParameterPane()
 {
-    /* OLD CODE FOR DETERMINING THE DESIRED SIZE OF THE VIEWPORT
-    parameter_pane_largest_y = -100000;
-    parameter_pane_smallest_y = 100000;
-
-    //determine ortho height for the entire parameter space
-    for (int i = 0; i < pup_curve.basis_functions.size(); i++)
-    {
-        p_cur_basis = &pup_curve.basis_functions[i];
-        if (p_cur_basis->top_most.y > parameter_pane_largest_y) parameter_pane_largest_y = p_cur_basis->top_most.y;
-        if (p_cur_basis->bottom_most.y < parameter_pane_smallest_y) parameter_pane_smallest_y = p_cur_basis->bottom_most.y;
-    }
-
-    //add some blank space to make things neater
-    (parameter_pane_smallest_y < 0)?(parameter_pane_smallest_y*=1.05):(parameter_pane_smallest_y*=0.95);
-    (parameter_pane_largest_y < 0)?(parameter_pane_largest_y*=0.95):(parameter_pane_largest_y*=1.05);
-    */
-
     //setup the orthographic viewing matrix for parameter space
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
@@ -207,22 +190,56 @@ void Renderer::drawParameterPane()
     double cur_u = 0;
     if (pup_curve.selected_point_index != -1)
     {
-        //selected control point
-        if (pup_curve.selected_basis_point_index != -1){
-            glPointSize(8);
-            glColor3f(0,1,0);
-            glBegin(GL_POINTS);
-            glVertex2d( pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.selected_basis_point_index].x, pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.selected_basis_point_index].y);
-            glEnd();
-        }
+        //only show control points if the basis functions are not normalized
+        if (!show_normalized_basis)
+        {
+            //selected control point
+            if (pup_curve.selected_basis_point_index != -1){
+                glPointSize(8);
+                glColor3f(0,1,0);
+                glBegin(GL_POINTS);
+                glVertex2d( pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.selected_basis_point_index].x, pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.selected_basis_point_index].y);
+                glEnd();
+            }
 
-        //selectable control point
-        if (pup_curve.selectable_basis_point_index != -1){
-            glPointSize(8);
-            glColor3f(0,1,1);
+            //selectable control point
+            if (pup_curve.selectable_basis_point_index != -1){
+                glPointSize(8);
+                glColor3f(0,1,1);
+                glBegin(GL_POINTS);
+                glVertex2d(pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.selectable_basis_point_index].x, pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.selectable_basis_point_index].y);
+                glEnd();
+            }
+
+            //control points
+            glPointSize(6);
+            glColor3f(0,0,1);
             glBegin(GL_POINTS);
-            glVertex2d( pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.selectable_basis_point_index].x, pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.selectable_basis_point_index].y);
+            for (int j = 0; j < pup_curve.basis_functions[pup_curve.selected_point_index].control_points.size(); j++)
+            {
+                glVertex2d( pup_curve.basis_functions[pup_curve.selected_point_index].control_points[j].x, pup_curve.basis_functions[pup_curve.selected_point_index].control_points[j].y);
+            }
             glEnd();
+
+            //selectable line left
+            if (pup_curve.selectable_basis_line_index == 0){
+                glLineWidth(2);
+                glColor3f(0,0,1);
+                glBegin(GL_LINES);
+                glVertex2f(pup_curve.basis_functions[pup_curve.selected_point_index].control_points[0].x, -1);
+                glVertex2f(pup_curve.basis_functions[pup_curve.selected_point_index].control_points[0].x, 2);
+                glEnd();
+            }
+
+            //selectable line right
+            else if (pup_curve.selectable_basis_line_index == 1){
+                glLineWidth(2);
+                glColor3f(0,0,1);
+                glBegin(GL_LINES);
+                glVertex2f(pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.basis_functions[pup_curve.selected_point_index].control_points.size()-1].x, -1);
+                glVertex2f(pup_curve.basis_functions[pup_curve.selected_point_index].control_points[pup_curve.basis_functions[pup_curve.selected_point_index].control_points.size()-1].x, 2);
+                glEnd();
+            }
         }
 
         //non normalised curve
@@ -244,7 +261,13 @@ void Renderer::drawParameterPane()
                     glBegin(GL_LINE_STRIP);
                     zero_influence = false;
                 }
-                glVertex2d(cur_u, pup_curve.basis_influences[j][pup_curve.selected_point_index].basis_scalar);
+                //show normalized basis influence if necessary
+                if (show_normalized_basis){
+                    glVertex2d(cur_u, pup_curve.basis_influences[j][pup_curve.selected_point_index].basis_scalar * pup_curve.normalising_coefficients[j]);
+                }
+                else {
+                    glVertex2d(cur_u, pup_curve.basis_influences[j][pup_curve.selected_point_index].basis_scalar);
+                }
             }
             cur_u+=pup_curve.u_increment;
         }
@@ -252,16 +275,7 @@ void Renderer::drawParameterPane()
             glEnd();
         }
 
-        //control points
-        glPointSize(6);
-        glColor3f(0,0,1);
-        glBegin(GL_POINTS);
-        //loop through the influences
-        for (int j = 0; j < pup_curve.basis_functions[pup_curve.selected_point_index].control_points.size(); j++)
-        {
-            glVertex2d( pup_curve.basis_functions[pup_curve.selected_point_index].control_points[j].x, pup_curve.basis_functions[pup_curve.selected_point_index].control_points[j].y);
-        }
-        glEnd();
+
     }
 
 
@@ -271,6 +285,8 @@ void Renderer::drawParameterPane()
         if (i == pup_curve.selected_point_index){
             continue;
         }
+
+        //reset the current u value
         cur_u = 0.0;
         //non normalised
         glColor3f(0,0,0);
@@ -290,7 +306,12 @@ void Renderer::drawParameterPane()
                     glBegin(GL_LINE_STRIP);
                     zero_influence = false;
                 }
-                 glVertex2d(cur_u, pup_curve.basis_influences[j][i].basis_scalar);
+                if (show_normalized_basis){
+                    glVertex2d(cur_u, pup_curve.basis_influences[j][i].basis_scalar * pup_curve.normalising_coefficients[j]);
+                }
+                else {
+                    glVertex2d(cur_u, pup_curve.basis_influences[j][i].basis_scalar);
+                }
             }
             cur_u+=pup_curve.u_increment;
         }
@@ -298,6 +319,14 @@ void Renderer::drawParameterPane()
             glEnd();
         }
     }
+
+    //draw y = 0 line
+    glLineWidth(1);
+    glColor3f(1,0,0);
+    glBegin(GL_LINES);
+    glVertex2f(0,0);
+    glVertex2f(1,0);
+    glEnd();
 }
 
 void Renderer::drawProjectionPane()
@@ -398,7 +427,7 @@ void Renderer::mousePressParameterPane( QMouseEvent *e )
         if (e->button() == Qt::LeftButton){
             if (pup_curve.selectable_basis_point_index != -1){
                 pup_curve.selected_basis_point_index = pup_curve.selectable_basis_point_index;
-            } else {
+            } else if (pup_curve.selectable_basis_line_index == -1){
                 pup_curve.addBasisControlPoint(temp);
             }
             updateGL();
@@ -481,11 +510,15 @@ void Renderer::mouseMoveParameterPane()
     if ((mouseDown)&&(pup_curve.selected_point_index != -1)&&(pup_curve.selectable_basis_point_index != -1))
     {
         pup_curve.modifyBasisControlPointPosition(temp,pup_curve.selected_basis_point_index);
-        updateOtherPanes();
+    } else if ((mouseDown)&&(pup_curve.selectable_basis_line_index == 0)){
+        pup_curve.stretchBasisLeft(temp.x);
+    } else if ((mouseDown)&&(pup_curve.selectable_basis_line_index == 1)){
+        pup_curve.stretchBasisRight(temp.x);
     }
     else {
         pup_curve.updateSelectableBasisControlPointIndex(0.1,temp);
     }
+    updateOtherPanes();
     updateGL();
 }
 void Renderer::mouseMoveProjectionPane(){}
@@ -653,6 +686,11 @@ void Renderer::clearSlot(){
     updateOtherPanes();
 }
 
+void Renderer::normalizedSlot(bool b){
+    show_normalized_basis = b;
+    updateGL();
+    //updateOtherPanes();
+}
 
 //=================================================================
 // ENGINE HELPER FUNCTIONS

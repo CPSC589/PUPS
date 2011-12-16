@@ -48,6 +48,7 @@ public slots:
     void fadeSlot(bool checked);
     void applyBasisSlot();
     void clearSlot();
+    void normalizedSlot(bool b);
 
 protected:
 
@@ -90,6 +91,9 @@ private:
         int stateIndex;
         void updateStates();
         bool drawFadeSelected;
+
+        //for determining whether to show the normalised basis functions
+        static bool show_normalized_basis;
 
         //Basis Collections
         vector<Nurbs> BasisCollection;

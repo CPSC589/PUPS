@@ -67,8 +67,11 @@ public:
         void modifyCurrentBasisControlPointWeight(double _new_weight);
         int selected_basis_point_index;
         int selectable_basis_point_index;
+        int selectable_basis_line_index;
         void selectBasisControlPoint(int _index);
         void updateSelectableBasisControlPointIndex(float _selection_radius, Point _mouse_position);
+        void stretchBasisLeft(double _new_left);
+        void stretchBasisRight(double _new_right);
 
     //Curve detail
         double u_increment;

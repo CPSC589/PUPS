@@ -19,6 +19,7 @@ Pup::Pup()
     selectable_point_index = -1;
     selected_basis_point_index = -1;
     selectable_basis_point_index = -1;
+    selectable_basis_line_index = -1;
     last_i = 0;
     last_ci = 0;
 }
@@ -41,6 +42,7 @@ Pup::Pup(Nurbs _default_basis, double _default_weight, double _u_increment, vect
     selectable_point_index = -1;
     selected_basis_point_index = -1;
     selectable_basis_point_index = -1;
+    selectable_basis_line_index = -1;
     last_i = 0;
     last_ci = 0;
 
@@ -145,6 +147,7 @@ void Pup::removeControlPoint(int _index)
         selected_basis_point_index = -1;
     }
     selectable_point_index = -1;
+    selectable_basis_line_index = -1;
 
     //stretch the last function to span the whole param space, and also the default basis
     if (basis_functions.size() == 1)
@@ -339,13 +342,74 @@ void Pup::removeBasisControlPoint(int _index)
     updateBasisInfluences();
 }
 
+void Pup::stretchBasisLeft(double _new_left)
+{
+    if (selected_point_index == -1){
+        return;
+    }
+    vector<Point>* p_control_points = & basis_functions[selected_point_index].control_points;
+
+    if (_new_left >= p_control_points->at(p_control_points->size()-1).x){
+        return;
+    }
+
+    //get change in basis width
+    double stretch = _new_left - p_control_points->at(0).x;
+    double basis_width = p_control_points->at(p_control_points->size()-1).x - p_control_points->at(0).x;
+    double cur_width = 0;
+    //loop through cps, adjusting their positions by "stretch" multiplied by the dist of the cp from the right divided by the total width (no need to iterate over last cp)
+    for (int i = 0; i < p_control_points->size()-1; i++){
+        cur_width = p_control_points->at(p_control_points->size()-1).x - p_control_points->at(i).x;
+        basis_functions[selected_point_index].control_points[i].x += stretch*(cur_width/basis_width);
+    }
+
+    basis_functions[selected_point_index].updateCurve();
+    updateBasisInfluences();
+}
+
+void Pup::stretchBasisRight(double _new_right){
+    if (selected_point_index == -1){
+        return;
+    }
+    vector<Point>* p_control_points = & basis_functions[selected_point_index].control_points;
+
+    if (_new_right <= p_control_points->at(0).x){
+        return;
+    }
+
+    //get change in basis width
+    double stretch = _new_right - p_control_points->at(p_control_points->size()-1).x;
+    double basis_width = p_control_points->at(p_control_points->size()-1).x - p_control_points->at(0).x;
+    double cur_width = 0;
+    //loop through cps, adjusting their positions by "stretch" multiplied by the dist of the cp from the right divided by the total width (no need to iterate over last cp)
+    for (int i = 1; i < p_control_points->size(); i++){
+        cur_width = p_control_points->at(i).x - p_control_points->at(0).x;
+        basis_functions[selected_point_index].control_points[i].x += stretch*(cur_width/basis_width);
+    }
+
+    basis_functions[selected_point_index].updateCurve();
+    updateBasisInfluences();
+}
+
 void Pup::modifyBasisControlPointPosition(Point _new_position, int _index)
 {
     if (selected_point_index == -1){
         return;
     }
-    //control point
-    basis_functions[selected_point_index].control_points[_index].y = _new_position.y;
+    //only allow x-movement between previous and next control points
+    if (_index > 0){
+         if (_new_position.x < (basis_functions[selected_point_index].control_points[_index-1].x)){
+             _new_position.x = basis_functions[selected_point_index].control_points[_index-1].x;
+         }
+    }
+
+    if (_index < basis_functions[selected_point_index].control_points.size()-1){
+        if (_new_position.x > (basis_functions[selected_point_index].control_points[_index+1].x)){
+            _new_position.x = basis_functions[selected_point_index].control_points[_index+1].x;
+        }
+    }
+
+    basis_functions[selected_point_index].control_points[_index] = _new_position;
     //update basis curve
     basis_functions[selected_point_index].updateCurve();
     //update this curve
@@ -386,6 +450,7 @@ void Pup::updateSelectableBasisControlPointIndex(float _selection_radius, Point 
     double current_dist;
     double closest_dist = _selection_radius;
     selectable_basis_point_index = -1;
+    selectable_basis_line_index = -1;
 
     //loop through all control points to see if any are within selection radius
     for (unsigned int i = 0; i < basis_functions[selected_point_index].control_points.size(); i++){
@@ -394,6 +459,21 @@ void Pup::updateSelectableBasisControlPointIndex(float _selection_radius, Point 
             selectable_basis_point_index = i;
             closest_dist = current_dist;
         }
+    }
+
+    //check if one of the 2 basis lines should be selectable
+    if (selectable_basis_point_index == -1){
+        current_dist = fabs(_mouse_position.x - basis_functions[selected_point_index].control_points[0].x);
+        if (current_dist < 0.01){
+            selectable_basis_line_index = 0;
+        }
+        else {
+            current_dist = fabs(_mouse_position.x - basis_functions[selected_point_index].control_points[basis_functions[selected_point_index].control_points.size()-1].x);
+            if (current_dist < 0.01){
+                selectable_basis_line_index = 1;
+            }
+        }
+
     }
 }
 
