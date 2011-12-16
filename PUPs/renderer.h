@@ -46,8 +46,12 @@ public slots:
     void loadCollectionSlot();
     void addToCollectionSlot();
     void fadeSlot(bool checked);
-    void applyBasisSlot();
+    void makeDefaultSlot();
+    void applyToAllSlot();
     void clearSlot();
+    void nextBasisSlot();
+    void previousBasisSlot();
+    void applySlot();
 
 protected:
 
@@ -86,13 +90,14 @@ private:
         static Point lastMousePosition;
 
         //change of states
-        vector<Pup> states;
-        int stateIndex;
+        static vector<Pup> states;
+        static int stateIndex;
         void updateStates();
-        bool drawFadeSelected;
+        static bool drawFadeSelected;
 
         //Basis Collections
-        vector<Nurbs> BasisCollection;
+        static vector<Nurbs> BasisCollection;
+        static int indexOfBasisCollection;
 
     //Stuff each render pane needs.
         int this_pane_type;
@@ -115,6 +120,7 @@ private:
         void drawParameterPane();
         void drawProjectionPane();
         void drawFade();
+        void drawCollectionPane();
 
     // additional drawing functions
         void drawMousePos();
