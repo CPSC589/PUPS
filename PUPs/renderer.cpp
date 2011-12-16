@@ -609,7 +609,7 @@ void Renderer::makeDefaultSlot(){
 }
 
 void Renderer::applySlot(){
-    if(indexOfBasisCollection >= 0){
+    if(indexOfBasisCollection >= 0 && pup_curve.selected_point_index != -1){
         pup_curve.basis_functions[pup_curve.selected_point_index] = BasisCollection[indexOfBasisCollection];
     }
     updateGL();
@@ -728,7 +728,7 @@ void Renderer::loadCollectionSlot(){
 }
 
 void Renderer::addToCollectionSlot(){
-    if(pup_curve.basis_functions.size() > 0){
+    if(pup_curve.basis_functions.size() > 0 && pup_curve.selected_point_index != -1){
         BasisCollection.push_back(pup_curve.basis_functions[pup_curve.selected_point_index]);
         indexOfBasisCollection += 1;
         updateGL();
