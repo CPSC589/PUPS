@@ -22,6 +22,7 @@ Pup::Pup()
     selectable_basis_line_index = -1;
     last_i = 0;
     last_ci = 0;
+    closed = false;
 }
 
 Pup::Pup(Nurbs _default_basis, double _default_weight, double _u_increment, vector<Point> _control_points, vector<Nurbs> _basis_functions, vector<double> _weights)
@@ -45,6 +46,7 @@ Pup::Pup(Nurbs _default_basis, double _default_weight, double _u_increment, vect
     selectable_basis_line_index = -1;
     last_i = 0;
     last_ci = 0;
+    closed = false;
 
     updateBasisInfluences();
 }
@@ -52,6 +54,22 @@ Pup::Pup(Nurbs _default_basis, double _default_weight, double _u_increment, vect
 Pup::~Pup(){
 
 }
+
+/*
+void Pup::setClosed(bool _closed){
+    if (_closed != closed){
+        closed = _closed;
+        if (closed){
+            //all basis functions need to be stretched right by 1/2 the size of the last basis and left by 1/2 the width of first basis
+
+            double last_basis_width = basis_functions[basis_functions.size()-1].right_most.x - basis_functions[basis_functions.size()-1].left_most.x;
+            double first_basis_width = basis_functions[0].right_most.x - basis_functions[0].left_most.x;
+
+        }
+        updateBasisInfluences();
+    }
+}
+*/
 
 void Pup::setDefaultBasis(Nurbs _basis){
     default_basis = _basis;
@@ -114,7 +132,6 @@ void Pup::addControlPoint(Point _cp)
         {
             //left shift amount is distance of first control point from 0
             shift_left = basis_functions[i].control_points[0].x;
-            //right shift is the left_shift - one half the difference between the old basis size and new basis size
             basis_size = basis_functions[i].control_points[basis_functions[i].control_points.size()-1].x - basis_functions[i].control_points[0].x;
             double temp_shift_right = shift_right * i/(basis_functions.size()-1);
 
@@ -132,7 +149,6 @@ void Pup::addControlPoint(Point _cp)
     }
     updateBasisInfluences();
 }
-    //if (normalising_denominator == 0)
 
 void Pup::removeControlPoint(int _index)
 {
@@ -493,6 +509,7 @@ void Pup::updateBasisInfluences()
 
     BasisInfluence basis_influence;
     double normalising_denominator;
+    //double cheat_u = 0.0;
 
     for (double u = 0; u <= 1.0; u+= u_increment){
         //add the vector that will hold all the basis influences for this one u value
@@ -506,6 +523,7 @@ void Pup::updateBasisInfluences()
             normalising_denominator += basis_influence.basis_scalar;
             basis_influences[basis_influences.size()-1].push_back(basis_influence);
         }
+
         //add the normalising coefficient to the list
         if (normalising_denominator != 0){
             normalising_coefficients.push_back(1/normalising_denominator);
@@ -537,8 +555,9 @@ void Pup::updateCurvePoints()
         cur_point = Point(0,0,1);
         //multiply each basis influence by the corresponding control point
         for (int j = 0; j < basis_influences[i].size(); j++){
-            cur_point = cur_point + control_points[basis_influences[i][j].basis_index]*basis_influences[i][j].basis_scalar;
+            cur_point = cur_point + control_points[basis_influences[i][j].basis_index] * basis_influences[i][j].basis_scalar;
         }
+
         cur_point = cur_point*normalising_coefficients[i];
         curve_points.push_back(cur_point);
     }

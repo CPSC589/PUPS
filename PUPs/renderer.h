@@ -52,6 +52,7 @@ public slots:
     void normalizedSlot(bool b);
     void previousBasisSlot();
     void applySlot();
+    void nextBasisSlot();
 
 protected:
 
@@ -88,6 +89,7 @@ private:
         static bool mouseDown;
         static Point lastMousePress;
         static Point lastMousePosition;
+        static Point rotations;
 
         //change of states
         static vector<Pup> states;

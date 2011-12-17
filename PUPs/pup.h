@@ -54,6 +54,7 @@ public:
         //by organising it this way, the user can move a control point without us having to recalculate basis influence & normalising those influences
         vector< vector<BasisInfluence> > basis_influences;
         vector<double> normalising_coefficients;
+        bool closed;
 
     //basis operations
 

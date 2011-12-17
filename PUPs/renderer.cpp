@@ -24,6 +24,7 @@ bool Renderer::drawFadeSelected = false;
 int Renderer::indexOfBasisCollection = -1;
 vector<Nurbs> Renderer::BasisCollection = vector<Nurbs>();
 vector<Pup> Renderer::states = vector<Pup>();
+Point Renderer::rotations = Point();
 
 //uninitialised static variables shared across all renderers
 double Renderer::frustum_data[6];
@@ -387,27 +388,66 @@ void Renderer::drawProjectionPane()
 
     glMatrixMode( GL_MODELVIEW );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    /*gluLookAt(0, 0, -0.3, // Eye/camera position
-              0, 0, -1.0,     // Look-at position
-              1.0, 0.0, 0.0);    // "Up" vector*/
+    gluLookAt(0,-1,2, // Eye/camera position
+              0,0,0,     // Look-at position
+              0,1,0);    // "Up" vector*/
 
-    //make curve visible
-    //glTranslatef(0,0,-5);
+    //bring the
+        glTranslatef(0,-1,-1);
+    glRotatef(rotations.x,0,1,0);
+    glRotatef(rotations.y-45,1,0,0);
 
     //draw 3d and 2d simultaneously for control points, and one after the other for the curve
 
     Point current_point = Point();
     //draw the pup curve
     glLineWidth(2);
-    glColor3f(0,0,1);
     glBegin(GL_LINE_STRIP);
-    for (unsigned int i = 0; i < pup_curve.curve_points.size(); i++){
-            current_point = pup_curve.curve_points[i];
-            glVertex3d(current_point.x, current_point.y, -1);
-        //glVertex3d(frustum_data[0], frustum_data[2], -1);
-        //glVertex3d(frustum_data[1], frustum_data[3], -1);
+    for (unsigned int i = 0; i < pup_curve.curve_points.size(); i++)
+    {
+        current_point = pup_curve.curve_points[i] - Point(0.5,0.5,0);
+        glColor3f(0,0,1);
+        glVertex3d(current_point.x, -current_point.y,0);
     }
     glEnd();
+
+    glBegin(GL_LINE_STRIP);
+    for (unsigned int i = 0; i < pup_curve.curve_points.size(); i++)
+    {
+        current_point = pup_curve.curve_points[i] - Point(0.5,0.5,0);
+        glColor3f(0,1,0);
+        glVertex3d(current_point.x, -current_point.y,1/current_point.z);
+    }
+    glEnd();
+
+/*
+    glBegin(GL_LINES);
+    for (unsigned int i = 0; i < pup_curve.curve_points.size(); i+=20)
+    {
+        current_point = pup_curve.curve_points[i] - Point(0.5,0.5,0);
+        glColor3f(0,0,1);
+        glVertex3d(current_point.x, -current_point.y,0);
+        glColor3f(0,1,0);
+        glVertex3d(current_point.x, -current_point.y,current_point.z);
+    }
+    glEnd();
+    */
+
+    glTranslatef(0,0,-0.01);
+
+    glLineWidth(1);
+    glColor3f(0.9,0.9,0.9);
+    glBegin(GL_LINES);
+    for (float i = -0.5; i <= 0.5; i+=0.1){
+        glVertex3f(i,-0.5,0);
+        glVertex3f(i,0.5,0);
+    }
+    for (float i = -0.5; i <= 0.5; i+=0.1){
+        glVertex3f(-0.5,i,0);
+        glVertex3f(0.5,i,0);
+    }
+    glEnd();
+
 }
 
 
@@ -570,7 +610,14 @@ void Renderer::mouseMoveParameterPane()
     updateOtherPanes();
     updateGL();
 }
-void Renderer::mouseMoveProjectionPane(){}
+void Renderer::mouseMoveProjectionPane(){
+    if (mouseDown){
+        rotations.x += lastMousePosition.x - lastMousePress.x;
+        rotations.y += lastMousePosition.y - lastMousePress.y;
+        lastMousePress = lastMousePosition;
+        updateGL();
+    }
+}
 
 Point Renderer::mapPupCoord(Point in)
 {
@@ -788,8 +835,8 @@ void Renderer::normalizedSlot(bool b){
 
 void Renderer::setupFrustum()
 {
-    frustum_data[4] = 0.5;
-    frustum_data[5] = 10.0;
+    frustum_data[4] = 1;
+    frustum_data[5] = 10;
 
     if(width()>=height()){
             double ratio = width()/(double)height();
