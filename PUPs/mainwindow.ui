@@ -164,9 +164,6 @@
               </widget>
              </item>
             </layout>
-            <zorder>AddToCollectionButton</zorder>
-            <zorder></zorder>
-            <zorder>glProjectionPane</zorder>
            </widget>
            <widget class="QWidget" name="tab_8">
             <attribute name="title">
@@ -199,7 +196,6 @@
                <property name="accessibleName">
                 <string/>
                </property>
-               <zorder>PreviousButton</zorder>
               </widget>
              </item>
              <item>
@@ -352,7 +348,7 @@
      <x>0</x>
      <y>0</y>
      <width>931</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuApplication">

@@ -50,6 +50,7 @@ public slots:
     void applyToAllSlot();
     void clearSlot();
     void normalizedSlot(bool b);
+    void nextBasisSlot();
     void previousBasisSlot();
     void applySlot();
 
@@ -101,6 +102,7 @@ private:
         //Basis Collections
         static vector<Nurbs> BasisCollection;
         static int indexOfBasisCollection;
+        void mappedBasis(Nurbs basis);
 
     //Stuff each render pane needs.
         int this_pane_type;

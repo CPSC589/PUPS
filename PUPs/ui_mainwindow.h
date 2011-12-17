@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Dec 16 13:42:51 2011
-**      by: Qt User Interface Compiler version 4.7.4
+** Created: Fri Dec 16 20:23:01 2011
+**      by: Qt User Interface Compiler version 4.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -187,7 +187,6 @@ public:
         verticalLayout_8->addWidget(glProjectionPane);
 
         tabWidget_2->addTab(tab_7, QString());
-        glProjectionPane->raise();
         tab_8 = new QWidget();
         tab_8->setObjectName(QString::fromUtf8("tab_8"));
         verticalLayout_9 = new QVBoxLayout(tab_8);
@@ -293,7 +292,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 931, 21));
+        menuBar->setGeometry(QRect(0, 0, 931, 26));
         menuApplication = new QMenu(menuBar);
         menuApplication->setObjectName(QString::fromUtf8("menuApplication"));
         menuEdit = new QMenu(menuBar);

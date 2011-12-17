@@ -635,17 +635,54 @@ void Renderer::previousBasisSlot(){
 
 void Renderer::makeDefaultSlot(){
     if(indexOfBasisCollection >= 0){
-        pup_curve.default_basis = BasisCollection[indexOfBasisCollection];
+        bool zero = false;
+        if(pup_curve.basis_functions.size() == 0){
+            pup_curve.basis_functions.push_back(Nurbs());
+            zero = true;
+        }
+        Nurbs savedBasis = pup_curve.basis_functions[0];
+        int originalPointIndex = pup_curve.selected_point_index;
+        pup_curve.selected_point_index = 0;
+        pup_curve.basis_functions[0] = pup_curve.default_basis;
+        mappedBasis(pup_curve.default_basis);
+        Nurbs newDefault = pup_curve.basis_functions[0];
+        pup_curve.basis_functions[0] = savedBasis;
+        pup_curve.default_basis = newDefault;
+        pup_curve.selected_point_index = originalPointIndex;
+        if(zero){
+            pup_curve.basis_functions.pop_back();
+        }
+        pup_curve.updateBasisInfluences();
         updateGL();
         updateOtherPanes();
+
+
     }
+}
+
+
+void Renderer::mappedBasis(Nurbs basis){
+        double rightMostX = basis.control_points[basis.control_points.size()-1].x;
+        double leftMostX = basis.control_points[0].x;
+        float difference = BasisCollection[indexOfBasisCollection].control_points[0].x - leftMostX;
+        vector<Point> newCPs = BasisCollection[indexOfBasisCollection].control_points;
+        for(int i = 0; i < newCPs.size(); i++){
+            Point currentPoint = newCPs[i];
+            Point newPoint = Point(currentPoint.x-difference, currentPoint.y, 0);
+            newCPs[i] = newPoint;
+        }
+        Nurbs newNurb = BasisCollection[indexOfBasisCollection];
+        newNurb.control_points = newCPs;
+        pup_curve.basis_functions[pup_curve.selected_point_index] = newNurb;
+        pup_curve.stretchBasisRight(rightMostX);
+
 }
 
 void Renderer::applySlot(){
     if(indexOfBasisCollection >= 0 && pup_curve.selected_point_index != -1){
-        Nurbs original = pup_curve.basis_functions[pup_curve.selected_point_index];
-        Nurbs basis = BasisCollection[indexOfBasisCollection];
-        //pup_curve.basis_functions[pup_curve.selected_point_index] =
+        Nurbs basis = pup_curve.basis_functions[pup_curve.selected_point_index];
+        mappedBasis(basis);
+
     }
     updateGL();
     updateOtherPanes();
@@ -653,9 +690,12 @@ void Renderer::applySlot(){
 
 void Renderer::applyToAllSlot(){
     if(indexOfBasisCollection >= 0){
+        int originalPointIndex = pup_curve.selected_point_index;
         for(int i = 0; i < pup_curve.control_points.size(); i++){
-            pup_curve.basis_functions[i] = BasisCollection[indexOfBasisCollection];
+            pup_curve.selected_point_index = i;
+            mappedBasis(pup_curve.basis_functions[i]);
         }
+        pup_curve.selected_point_index = originalPointIndex;
         updateGL();
         updateOtherPanes();
     }

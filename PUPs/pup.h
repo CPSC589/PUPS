@@ -72,6 +72,7 @@ public:
         void updateSelectableBasisControlPointIndex(float _selection_radius, Point _mouse_position);
         void stretchBasisLeft(double _new_left);
         void stretchBasisRight(double _new_right);
+        void updateBasisInfluences();
 
     //Curve detail
         double u_increment;
@@ -88,7 +89,7 @@ private:
     //for when basis centers or radii are changed, or pup control points are added/removed
     void updateCentersAndRadii();
     //for when basis functions are changed, and if the above func is called
-    void updateBasisInfluences();
+
     //for when pup control points are moved
     void updateCurvePoints();
     void setupDefaultBasis();

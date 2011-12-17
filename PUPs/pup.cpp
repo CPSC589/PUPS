@@ -367,6 +367,7 @@ void Pup::stretchBasisLeft(double _new_left)
     updateBasisInfluences();
 }
 
+
 void Pup::stretchBasisRight(double _new_right){
     if (selected_point_index == -1){
         return;
