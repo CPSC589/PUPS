@@ -37,10 +37,8 @@ Renderer::Renderer( QWidget* parent )
 {
     //WE CAN ONLY GET THE TYPE OF RENDERER AFTER THE CONSTRUCTOR
      this_pane_type = -1;
-    //only need to setup static variables in one of the renderers
     if (panes_loaded == -1)
     {
-        setupFrustum();
         panes_loaded++;
     }
 }
@@ -59,7 +57,10 @@ void Renderer::paintGL()
         {
             if (objectName() == "glCurvePane") this_pane_type = CURVE_PANE;
             else if (objectName() == "glParameterPane") this_pane_type = PARAMETER_PANE;
-            else if (objectName() == "glProjectionPane") this_pane_type = PROJECTION_PANE;
+            else if (objectName() == "glProjectionPane") {
+                setupFrustum();
+                this_pane_type = PROJECTION_PANE;
+            }
             else if (objectName() == "glBasisCollection") this_pane_type = COLLECTION_PANE;
             else return;
             //if we get to this line then the pane type was just determined
@@ -110,28 +111,11 @@ void Renderer::initializeGL()
 }
 void Renderer::resizeGL( int w, int h )
 {
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-
-   if(width()>=height()){
-            double ratio = width()/(double)height();
-            frustum_data[0] = -1.0*ratio;
-            frustum_data[1] = ratio;
-            frustum_data[2] = -1.0;
-            frustum_data[3] = 1.0;
-
-    }
-    else if(height()>width()){
-            double ratio = height()/(double)width();
-            frustum_data[0] = -1.0;
-            frustum_data[1] = 1.0;
-            frustum_data[2] = -1.0*ratio;
-            frustum_data[3] = ratio;
+    if (this_pane_type == PROJECTION_PANE){
+        setupFrustum();
     }
 
-    glMatrixMode(GL_MODELVIEW);
+    updateGL();
     updateOtherPanes();
 }
 
@@ -651,6 +635,12 @@ void Renderer::updateOtherPanes(){
     emit updateNext(this_pane_type);
 }
 
+
+void Renderer::slotSetClosed(bool b){
+    pup_curve.setClosed(b);
+    updateGL();
+    updateOtherPanes();
+}
 
 void Renderer::fadeSlot(bool checked){
     if(checked){

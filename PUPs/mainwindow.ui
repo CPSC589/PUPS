@@ -128,7 +128,7 @@
          <item>
           <widget class="QTabWidget" name="tabWidget_2">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="tab_7">
             <attribute name="title">
@@ -164,7 +164,6 @@
               </widget>
              </item>
             </layout>
-            <zorder>glProjectionPane</zorder>
            </widget>
            <widget class="QWidget" name="tab_8">
             <attribute name="title">
@@ -376,6 +375,7 @@
     </property>
     <addaction name="actionFade"/>
     <addaction name="actionNormalized_Basis_Functions"/>
+    <addaction name="actionClosed_Curve"/>
    </widget>
    <addaction name="menuApplication"/>
    <addaction name="menuEdit"/>
@@ -457,6 +457,14 @@
     <string>Normalized Basis Functions</string>
    </property>
   </action>
+  <action name="actionClosed_Curve">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Closed Curve</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -483,6 +491,7 @@
     <slot>applySlot()</slot>
     <slot>nextBasisSlot()</slot>
     <slot>previousBasisSlot()</slot>
+    <slot>slotSetClosed(bool)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -837,6 +846,22 @@
     <hint type="destinationlabel">
      <x>465</x>
      <y>458</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionClosed_Curve</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>glParameterPane</receiver>
+   <slot>slotSetClosed(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>465</x>
+     <y>469</y>
     </hint>
    </hints>
   </connection>

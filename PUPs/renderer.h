@@ -53,6 +53,7 @@ public slots:
     void previousBasisSlot();
     void applySlot();
     void nextBasisSlot();
+    void slotSetClosed(bool);
 
 protected:
 

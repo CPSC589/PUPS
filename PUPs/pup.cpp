@@ -55,21 +55,12 @@ Pup::~Pup(){
 
 }
 
-/*
 void Pup::setClosed(bool _closed){
     if (_closed != closed){
         closed = _closed;
-        if (closed){
-            //all basis functions need to be stretched right by 1/2 the size of the last basis and left by 1/2 the width of first basis
-
-            double last_basis_width = basis_functions[basis_functions.size()-1].right_most.x - basis_functions[basis_functions.size()-1].left_most.x;
-            double first_basis_width = basis_functions[0].right_most.x - basis_functions[0].left_most.x;
-
-        }
         updateBasisInfluences();
     }
 }
-*/
 
 void Pup::setDefaultBasis(Nurbs _basis){
     default_basis = _basis;
@@ -258,7 +249,7 @@ void Pup::selectControlPoint(int _index){
 }
 
 void Pup::updateSelectableControlPointIndex(float _selection_radius, Point _mouse_position)
-{  
+{
     double current_dist;
     double closest_dist = _selection_radius;
     selectable_point_index = -1;
@@ -470,7 +461,11 @@ void Pup::updateSelectableBasisControlPointIndex(float _selection_radius, Point 
 
     //loop through all control points to see if any are within selection radius
     for (unsigned int i = 0; i < basis_functions[selected_point_index].control_points.size(); i++){
-        current_dist = (_mouse_position - basis_functions[selected_point_index].control_points[i]).magnitude();
+        Point temp = (_mouse_position - basis_functions[selected_point_index].control_points[i]);
+        //little hack
+        temp.y = temp.y*0.2;
+        temp.x = temp.x * 1.5;
+        current_dist = (temp).magnitude();
         if (current_dist < closest_dist){
             selectable_basis_point_index = i;
             closest_dist = current_dist;
@@ -509,18 +504,47 @@ void Pup::updateBasisInfluences()
 
     BasisInfluence basis_influence;
     double normalising_denominator;
-    //double cheat_u = 0.0;
 
-    for (double u = 0; u <= 1.0; u+= u_increment){
+    //when to stop/start overlapping in a closed curve
+    double overlap_to = 0.0;
+    double overlap_from = 1.0;
+
+    if ((basis_functions.size() > 2)&&(closed)){
+        //get distance between the end of the first and second basis, and make the last overlapping basis end at that distance away from end of first basis
+        overlap_to = basis_functions[0].right_most.x - (basis_functions[1].right_most.x - basis_functions[0].right_most.x);
+        //similar idea for this, but using distances between basis beginnings
+        overlap_from = 1-overlap_to;//basis_functions[basis_functions.size()-1].left_most.x + (basis_functions[basis_functions.size()-1].left_most.x - basis_functions[basis_functions.size()-2].left_most.x);
+    }
+
+    for (double u = 0; u <= 1.0; u+= u_increment)
+    {
         //add the vector that will hold all the basis influences for this one u value
         basis_influences.push_back(vector<BasisInfluence>());
         normalising_denominator = 0;
         //loop through the basis functions to find all the influences
         for (int i = 0; i < basis_functions.size(); i++)
         {
-            basis_influence.basis_scalar = cheatFunc(i,u) * weights[i];
             basis_influence.basis_index = i;
-            normalising_denominator += basis_influence.basis_scalar;
+
+            if ((basis_functions.size() > 2)&&(closed)){
+                if (overlap_to >= u)
+                {
+                    basis_influence.basis_scalar = (cheatFunc(i,u) + cheatFunc(i,1-overlap_to+u)) * weights[i];
+                    normalising_denominator += basis_influence.basis_scalar;
+                }
+                else if (overlap_from <= u){
+                    basis_influence.basis_scalar = (cheatFunc(i,u) + cheatFunc(i,u-overlap_from)) * weights[i];
+                    normalising_denominator += basis_influence.basis_scalar;
+                }
+                else {
+                    basis_influence.basis_scalar = cheatFunc(i,u) * weights[i];
+                    normalising_denominator += basis_influence.basis_scalar;
+                }
+            } else {
+                basis_influence.basis_scalar = cheatFunc(i,u) * weights[i];
+                normalising_denominator += basis_influence.basis_scalar;
+            }
+
             basis_influences[basis_influences.size()-1].push_back(basis_influence);
         }
 

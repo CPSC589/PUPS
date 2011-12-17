@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Dec 16 18:50:55 2011
+** Created: Sat Dec 17 15:46:18 2011
 **      by: Qt User Interface Compiler version 4.7.4
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -46,6 +46,7 @@ public:
     QAction *actionAdd_Selected_Basis_to_Collection;
     QAction *actionClear_Screen;
     QAction *actionNormalized_Basis_Functions;
+    QAction *actionClosed_Curve;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QSplitter *splitter_2;
@@ -113,6 +114,9 @@ public:
         actionNormalized_Basis_Functions = new QAction(MainWindow);
         actionNormalized_Basis_Functions->setObjectName(QString::fromUtf8("actionNormalized_Basis_Functions"));
         actionNormalized_Basis_Functions->setCheckable(true);
+        actionClosed_Curve = new QAction(MainWindow);
+        actionClosed_Curve->setObjectName(QString::fromUtf8("actionClosed_Curve"));
+        actionClosed_Curve->setCheckable(true);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout_4 = new QVBoxLayout(centralWidget);
@@ -187,7 +191,6 @@ public:
         verticalLayout_8->addWidget(glProjectionPane);
 
         tabWidget_2->addTab(tab_7, QString());
-        glProjectionPane->raise();
         tab_8 = new QWidget();
         tab_8->setObjectName(QString::fromUtf8("tab_8"));
         verticalLayout_9 = new QVBoxLayout(tab_8);
@@ -318,6 +321,7 @@ public:
         menuEdit->addAction(actionClear_Screen);
         menuView->addAction(actionFade);
         menuView->addAction(actionNormalized_Basis_Functions);
+        menuView->addAction(actionClosed_Curve);
 
         retranslateUi(MainWindow);
         QObject::connect(actionClose, SIGNAL(triggered()), MainWindow, SLOT(close()));
@@ -342,8 +346,9 @@ public:
         QObject::connect(glCurvePane, SIGNAL(updateNext(int)), glProjectionPane, SLOT(updateMe(int)));
         QObject::connect(glProjectionPane, SIGNAL(updateNext(int)), glBasisCollection, SLOT(updateMe(int)));
         QObject::connect(actionNormalized_Basis_Functions, SIGNAL(triggered(bool)), glParameterPane, SLOT(normalizedSlot(bool)));
+        QObject::connect(actionClosed_Curve, SIGNAL(triggered(bool)), glParameterPane, SLOT(slotSetClosed(bool)));
 
-        tabWidget_2->setCurrentIndex(1);
+        tabWidget_2->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -366,6 +371,7 @@ public:
         actionAdd_Selected_Basis_to_Collection->setText(QApplication::translate("MainWindow", "Add Selected Basis to Collection", 0, QApplication::UnicodeUTF8));
         actionClear_Screen->setText(QApplication::translate("MainWindow", "Clear Screen", 0, QApplication::UnicodeUTF8));
         actionNormalized_Basis_Functions->setText(QApplication::translate("MainWindow", "Normalized Basis Functions", 0, QApplication::UnicodeUTF8));
+        actionClosed_Curve->setText(QApplication::translate("MainWindow", "Closed Curve", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "PUPs Curve Editor:", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_ACCESSIBILITY
         glCurvePane->setAccessibleName(QString());

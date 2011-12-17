@@ -21,6 +21,8 @@ public:
     Pup(Nurbs _default_basis, double _default_weight = 1.0, double _u_increment = 0.001, vector<Point> _control_points = vector<Point>(), vector<Nurbs> _basis_functions = vector<Nurbs>(), vector<double> _weights = vector<double>());
     ~Pup();
 
+        void setClosed(bool _closed);
+
     //defaults for when creating new control points
         Nurbs default_basis;
         double default_weight;
